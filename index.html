@@ -67,7 +67,7 @@ let stars=[],flies=[],pads=[],lotuses=[],campanulas=[],reeds=[],ripples=[];
 let audio=null,audioOn=false,timer=null,note=0,lastTime=0;
 let dragging=false,dragStartX=0,lastPointerX=0,didDrag=false,pointerId=null;
 
-const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduced=false;
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const mod=(n,m)=>((n%m)+m)%m;
 
