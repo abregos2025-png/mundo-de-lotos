@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#06131e">
-<meta name="description" content="Pantano nocturno con estrellas brillantes, flores de loto, campánulas, luciérnagas y ranitas interactivas.">
-<title>Mundo de Lotos</title>
+<meta name="description" content="Un lago nocturno mágico con lotos rosados en perspectiva, campánulas lilas, flores violetas, luciérnagas y ranitas interactivas.">
+<title>Mundo de Lotos | Flores rosadas y violetas</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06131e}
@@ -22,7 +22,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06131e}
 </head>
 <body>
 <main id="world" aria-label="Pantano nocturno">
-<canvas id="scene" aria-label="Pantano nocturno con estrellas, flores de loto, campánulas y ranitas"></canvas>
+<canvas id="scene" aria-label="Lago nocturno con lotos rosados en perspectiva, campánulas, flores violetas y ranitas"></canvas>
 <div class="controls">
 <button class="control" id="leftBtn" aria-label="Explorar hacia la izquierda" title="Izquierda">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
@@ -49,7 +49,7 @@ const soundBtn=document.getElementById('soundBtn');
 const soundIcon=document.getElementById('soundIcon');
 
 let w=0,h=0,dpr=1,S=1,H=0,P=3000,cameraX=0;
-let stars=[],flies=[],pads=[],lotuses=[],campanulas=[],reeds=[],ripples=[],frogs=[];
+let stars=[],flies=[],pads=[],lotuses=[],campanulas=[],wildflowers=[],reeds=[],ripples=[],frogs=[];
 let dragging=false,dragStartX=0,lastPointerX=0,didDrag=false,pointerId=null;
 let audio=null,audioOn=false,timer=null,note=0;
 
@@ -98,6 +98,7 @@ function setup(){
  pads=[];
  lotuses=[];
  campanulas=[];
+ wildflowers=[];
  reeds=[];
  ripples=[];
  frogs=[];
@@ -118,10 +119,10 @@ function setup(){
   });
  }
 
- // Lotos distribuidos, bastantes pero sin amontonarse.
- // Cada flor tendrá su propia hoja flotante.
- const lotusSpacing=Math.max(95,S*.16);
- const lotusRows=[.55,.72,.62,.78,.66];
+ // Lotos separados, con tamaños distintos según la distancia.
+ // Cada flor tendrá su propia hoja flotante y pétalos rosados en capas.
+ const lotusSpacing=Math.max(112,S*.19);
+ const lotusRows=[.56,.72,.62,.78,.66,.59];
  const lotusCount=Math.floor(P/lotusSpacing);
 
  for(let i=0;i<lotusCount;i++){
@@ -136,7 +137,7 @@ function setup(){
 
   lotuses.push({
    x,y,
-   size:rnd(.15,.21),
+   size:rnd(.18,.27),
    p:rnd(0,7),
    tone:Math.random(),
    depth
@@ -170,6 +171,20 @@ function setup(){
    size:rnd(.72,1.36),
    count:1+Math.floor(Math.random()*4),
    color:campColors[Math.floor(Math.random()*campColors.length)],
+   phase:rnd(0,7)
+  });
+ }
+
+ // Flores silvestres violetas, pequeñas y luminosas, en ramitas finas.
+ const wildColors=['#8a55f5','#a16bff','#7044d8','#bd8cff','#654bdc'];
+ for(let i=0;i<Math.floor(P/76);i++){
+  wildflowers.push({
+   x:rnd(0,P),
+   base:rnd(.70,1.02),
+   len:rnd(.055,.145),
+   count:3+Math.floor(Math.random()*5),
+   size:rnd(.72,1.2),
+   color:wildColors[Math.floor(Math.random()*wildColors.length)],
    phase:rnd(0,7)
   });
  }
@@ -495,131 +510,138 @@ function drawPad(p,x,t){
 // Lotos pequeños y naturales, vistos desde arriba,
 // cada uno flotando sobre su propia hoja.
 function drawLotus(f,x,t){
- const y=f.y*h+Math.sin(t*.0012+f.p)*.45;
- const z=Math.max(14,f.size*S*.20);
+ const y=f.y*h+Math.sin(t*.0012+f.p)*.55;
+ const z=Math.max(17,f.size*S*.40);
  const scale=f.depth;
- const sway=Math.sin(t*.0012+f.p)*z*.012;
+ const sway=Math.sin(t*.0011+f.p)*z*.018;
 
  ctx.save();
  ctx.translate(x+sway,y);
  ctx.scale(scale,scale);
 
- // Sombra delicada sobre el agua.
- ctx.globalAlpha=.17;
- ctx.fillStyle='#020e16';
+ // Sombra suave para que la flor parezca levantarse del agua.
+ ctx.globalAlpha=.25;
+ ctx.fillStyle='#020d16';
  ctx.beginPath();
- ctx.ellipse(0,z*.08,z*1.22,z*.73,0,0,Math.PI*2);
+ ctx.ellipse(0,z*.39,z*1.38,z*.43,-.025,0,Math.PI*2);
  ctx.fill();
  ctx.globalAlpha=1;
 
- // Hoja verde flotante, un poco más grande que la flor.
- const leafGrad=ctx.createLinearGradient(0,-z*.55,0,z*.7);
- leafGrad.addColorStop(0,'#28634c');
- leafGrad.addColorStop(1,'#123d35');
-
+ // Hoja flotante ovalada, con la típica abertura de un nenúfar.
+ const leafGrad=ctx.createLinearGradient(0,-z*.03,0,z*.70);
+ leafGrad.addColorStop(0,'#347355');
+ leafGrad.addColorStop(.52,'#205743');
+ leafGrad.addColorStop(1,'#103c34');
  ctx.fillStyle=leafGrad;
  ctx.beginPath();
- ctx.ellipse(0,z*.17,z*1.18,z*.70,0,0,Math.PI*2);
+ ctx.ellipse(0,z*.37,z*1.42,z*.48,0,0,Math.PI*2);
  ctx.fill();
 
- // Hendidura de la hoja.
- ctx.fillStyle='#10313a';
+ ctx.fillStyle='#0b3030';
  ctx.beginPath();
- ctx.moveTo(z*1.17,z*.08);
- ctx.lineTo(z*.82,z*.18);
- ctx.lineTo(z*.91,z*.34);
+ ctx.moveTo(z*1.40,z*.36);
+ ctx.lineTo(z*.94,z*.30);
+ ctx.lineTo(z*1.08,z*.48);
  ctx.closePath();
  ctx.fill();
 
- // Nervaduras tenues de la hoja.
- ctx.strokeStyle='rgba(172,210,169,.22)';
- ctx.lineWidth=Math.max(.45,z*.012);
+ ctx.strokeStyle='rgba(175,219,173,.24)';
+ ctx.lineWidth=Math.max(.55,z*.012);
  ctx.beginPath();
- ctx.moveTo(0,z*.17);
- ctx.lineTo(-z*.78,-z*.13);
- ctx.moveTo(0,z*.17);
- ctx.lineTo(-z*.74,z*.43);
- ctx.moveTo(0,z*.17);
- ctx.lineTo(z*.77,z*.40);
+ ctx.moveTo(0,z*.37); ctx.lineTo(-z*1.03,z*.17);
+ ctx.moveTo(0,z*.37); ctx.lineTo(-z*.88,z*.61);
+ ctx.moveTo(0,z*.37); ctx.lineTo(z*.88,z*.61);
  ctx.stroke();
 
- // Distintos tonos naturales de violeta y lila.
+ // Paletas rosadas inspiradas en el loto real de la referencia.
  const palettes=[
-  {edge:'#9679d9',mid:'#c4a9e9',base:'#eadcf7'},
-  {edge:'#8068c9',mid:'#b6a0e5',base:'#e7dafa'},
-  {edge:'#a184d7',mid:'#cbb6ed',base:'#f0e5fb'},
-  {edge:'#806ac2',mid:'#b4a2de',base:'#e6dcf7'}
+  {tip:'#d86b9d',mid:'#f3b4cf',base:'#fff0f5',inner:'#d83f7b',innerMid:'#fa83ae'},
+  {tip:'#bf5b91',mid:'#ed9fc2',base:'#fbe6ef',inner:'#c93475',innerMid:'#f66fa5'},
+  {tip:'#d77ba9',mid:'#f5c0d8',base:'#fff2f6',inner:'#df4c88',innerMid:'#ff92b9'}
  ];
+ const pal=palettes[Math.min(palettes.length-1,Math.floor(f.tone*palettes.length))];
 
- const pal=palettes[Math.floor(f.tone*palettes.length)];
-
- // Pétalos redondeados organizados en forma de roseta.
- function drawPetalRing(count,len,halfWidth,offset){
-  for(let i=0;i<count;i++){
-   const a=(i/count)*Math.PI*2+offset;
-
-   ctx.save();
-   ctx.rotate(a);
-
-   const petalGrad=ctx.createLinearGradient(0,-len,0,z*.12);
-   petalGrad.addColorStop(0,pal.edge);
-   petalGrad.addColorStop(.58,pal.mid);
-   petalGrad.addColorStop(1,pal.base);
-
-   ctx.fillStyle=petalGrad;
+ // Cada pétalo crece hacia arriba, pero se inclina hacia fuera.
+ // Esta distribución dibuja el loto en perspectiva, no como una roseta plana.
+ function petal(px,py,len,width,angle,tip,mid,base,highlight=true){
+  ctx.save();
+  ctx.translate(px,py);
+  ctx.rotate(angle);
+  const g=ctx.createLinearGradient(0,-len,0,z*.20);
+  g.addColorStop(0,tip);
+  g.addColorStop(.48,mid);
+  g.addColorStop(1,base);
+  ctx.fillStyle=g;
+  ctx.beginPath();
+  ctx.moveTo(0,z*.16);
+  ctx.bezierCurveTo(-width*.60,-len*.08,-width*.78,-len*.62,-width*.15,-len*.98);
+  ctx.quadraticCurveTo(0,-len*1.06,width*.15,-len*.98);
+  ctx.bezierCurveTo(width*.78,-len*.62,width*.60,-len*.08,0,z*.16);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,245,250,.65)';
+  ctx.lineWidth=Math.max(.55,z*.012);
+  ctx.stroke();
+  if(highlight){
+   ctx.strokeStyle='rgba(255,255,255,.34)';
+   ctx.lineWidth=Math.max(.45,z*.007);
    ctx.beginPath();
-   ctx.moveTo(0,z*.07);
-   ctx.bezierCurveTo(
-    -halfWidth*.83,-len*.12,
-    -halfWidth*.92,-len*.73,
-    0,-len
-   );
-   ctx.bezierCurveTo(
-    halfWidth*.92,-len*.73,
-    halfWidth*.83,-len*.12,
-    0,z*.07
-   );
-
-   ctx.closePath();
-   ctx.fill();
-
-   ctx.strokeStyle='rgba(255,249,255,.46)';
-   ctx.lineWidth=Math.max(.45,z*.009);
+   ctx.moveTo(0,z*.06);
+   ctx.quadraticCurveTo(-width*.025,-len*.43,0,-len*.83);
    ctx.stroke();
-
-   ctx.strokeStyle='rgba(255,255,255,.18)';
-   ctx.lineWidth=Math.max(.4,z*.005);
-   ctx.beginPath();
-   ctx.moveTo(0,z*.02);
-   ctx.quadraticCurveTo(0,-len*.46,0,-len*.82);
-   ctx.stroke();
-
-   ctx.restore();
   }
+  ctx.restore();
  }
 
- // Tres capas pequeñas para una flor abierta y natural.
- drawPetalRing(12,z*.88,z*.25,0);
- drawPetalRing(10,z*.68,z*.22,Math.PI/10);
- drawPetalRing(7,z*.43,z*.16,Math.PI/7);
+ // Capa trasera: pétalos largos, pálidos y abiertos hacia los lados.
+ const back=[
+  [-.66,-62,1.00],[-.52,-49,1.19],[-.36,-35,1.34],[-.19,-20,1.48],
+  [0,-5,1.53],[.19,12,1.48],[.37,29,1.34],[.54,46,1.18],[.68,62,.98]
+ ];
+ for(const [px,a,l] of back){
+  petal(px*z,z*.12,z*l,z*.39,a*Math.PI/180,pal.tip,pal.mid,pal.base,true);
+ }
 
- // Centro dorado.
- ctx.fillStyle='#d5bd78';
+ // Pétalos laterales anchos que dan la silueta de loto abierta.
+ petal(-.47*z,z*.22,z*1.03,z*.47,-72*Math.PI/180,'#e18bb1',pal.mid,'#fff0f5');
+ petal(.47*z,z*.22,z*1.03,z*.47,72*Math.PI/180,'#e18bb1',pal.mid,'#fff0f5');
+ petal(-.28*z,z*.25,z*.91,z*.43,-49*Math.PI/180,pal.tip,pal.mid,'#ffe8f0');
+ petal(.29*z,z*.25,z*.91,z*.43,49*Math.PI/180,pal.tip,pal.mid,'#ffe8f0');
+
+ // Segunda capa, de un rosa más intenso, alrededor del corazón.
+ const middle=[[-.43,-46,1.00],[-.29,-31,1.12],[-.15,-16,1.20],[0,-2,1.24],[.15,13,1.19],[.30,28,1.10],[.43,43,.98]];
+ for(const [px,a,l] of middle){
+  petal(px*z,z*.19,z*l,z*.32,a*Math.PI/180,pal.inner,pal.innerMid,'#f8c3d8',true);
+ }
+
+ // Pétalos delanteros pálidos: su base baja crea el efecto de profundidad.
+ petal(-.48*z,z*.42,z*.80,z*.43,-57*Math.PI/180,'#d975a4','#f1b5d0','#fff1f6');
+ petal(-.25*z,z*.46,z*.89,z*.39,-31*Math.PI/180,'#d64d89','#f49bc0','#ffeaf2');
+ petal(0,z*.48,z*.94,z*.42,-3*Math.PI/180,'#c83c7a','#ed82ad','#ffe5ef');
+ petal(.25*z,z*.46,z*.89,z*.39,31*Math.PI/180,'#d64d89','#f49bc0','#ffeaf2');
+ petal(.48*z,z*.42,z*.80,z*.43,57*Math.PI/180,'#d975a4','#f1b5d0','#fff1f6');
+
+ // Centro dorado con estambres finos y visibles, como en la fotografía.
+ ctx.fillStyle='#d8aa3e';
  ctx.beginPath();
- ctx.arc(0,0,z*.105,0,Math.PI*2);
+ ctx.ellipse(0,z*.12,z*.19,z*.13,0,0,Math.PI*2);
  ctx.fill();
-
- ctx.fillStyle='#f5e9bd';
  for(let i=0;i<9;i++){
-  const a=i*2.399;
-
+  const q=(i-4)/4;
+  const sx=q*z*.115;
+  const sy=z*.12;
+  const tx=q*z*.19;
+  const ty=-z*(.16+.09*(1-Math.abs(q)));
+  ctx.strokeStyle=i%2?'#f1b72e':'#ffda52';
+  ctx.lineWidth=Math.max(1,z*.025);
+  ctx.lineCap='round';
   ctx.beginPath();
-  ctx.arc(
-   Math.cos(a)*z*.064,
-   Math.sin(a)*z*.064,
-   Math.max(.45,z*.014),
-   0,Math.PI*2
-  );
+  ctx.moveTo(sx,sy);
+  ctx.quadraticCurveTo(sx+q*z*.035,ty+z*.10,tx,ty);
+  ctx.stroke();
+  ctx.fillStyle=i%2?'#ffdb56':'#ffe991';
+  ctx.beginPath();
+  ctx.arc(tx,ty,Math.max(1.1,z*.035),0,Math.PI*2);
   ctx.fill();
  }
 
@@ -732,6 +754,89 @@ function drawCampanula(c,x,t){
   );
  }
 
+ ctx.restore();
+}
+
+
+function drawWildBloom(x,y,size,color,phase,t){
+ const pulse=.82+.18*Math.sin(t*.0014+phase);
+ const r=size*pulse;
+ ctx.save();
+ ctx.globalAlpha=.32;
+ ctx.fillStyle=gradient(x,y,r*2.7,'rgba(155,105,255,.75)','rgba(110,60,220,0)');
+ ctx.beginPath();
+ ctx.arc(x,y,r*2.7,0,Math.PI*2);
+ ctx.fill();
+ ctx.globalAlpha=1;
+ for(let k=0;k<5;k++){
+  const a=k*Math.PI*2/5+phase*.08;
+  ctx.save();
+  ctx.translate(x+Math.cos(a)*r*.24,y+Math.sin(a)*r*.24);
+  ctx.rotate(a+Math.PI/2);
+  const petalGrad=ctx.createLinearGradient(0,-r*.55,0,r*.35);
+  petalGrad.addColorStop(0,'#d3b5ff');
+  petalGrad.addColorStop(.48,color);
+  petalGrad.addColorStop(1,'#5731ad');
+  ctx.fillStyle=petalGrad;
+  ctx.beginPath();
+  ctx.ellipse(0,-r*.22,r*.20,r*.39,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+ }
+ ctx.fillStyle='#e7d9ff';
+ ctx.beginPath();
+ ctx.arc(x,y,Math.max(.8,r*.10),0,Math.PI*2);
+ ctx.fill();
+ ctx.restore();
+}
+
+function drawWildflower(c,x,t){
+ const base=c.base*h;
+ const len=c.len*h;
+ const depth=Math.max(.48,Math.min(1.05,.50+(c.base-.66)*1.35));
+ const sway=Math.sin(t*.0008+c.phase)*S*.018*c.size;
+ ctx.save();
+ ctx.translate(x,0);
+ ctx.scale(depth,depth);
+ ctx.lineCap='round';
+ ctx.strokeStyle='#183e36';
+ ctx.lineWidth=Math.max(.75,S*.0014);
+ ctx.beginPath();
+ ctx.moveTo(0,base);
+ ctx.bezierCurveTo(sway*.12,base-len*.32,sway*.85,base-len*.72,sway,base-len);
+ ctx.stroke();
+
+ // Hojas pequeñas a lo largo del tallo.
+ for(let i=0;i<3;i++){
+  const q=.25+i*.20;
+  const side=i%2===0?-1:1;
+  const lx=sway*q+side*S*.012*c.size;
+  const ly=base-len*q;
+  ctx.fillStyle=i%2?'#29563e':'#234b39';
+  ctx.beginPath();
+  ctx.moveTo(sway*q,ly);
+  ctx.quadraticCurveTo(lx-side*S*.004,ly-S*.012,lx+side*S*.008,ly-S*.009);
+  ctx.quadraticCurveTo(lx+side*S*.002,ly+S*.002,sway*q,ly);
+  ctx.fill();
+ }
+
+ // Ramitas laterales con pequeños racimos violeta/lila.
+ for(let j=0;j<c.count;j++){
+  const q=.27+(j/(Math.max(1,c.count-1)))*.65;
+  const side=j%2===0?-1:1;
+  const bx=sway*q+side*S*(.012+.006*(j%3))*c.size;
+  const by=base-len*q;
+  const headSize=S*.012*c.size*(.8+(j%3)*.12);
+  ctx.strokeStyle='#214838';
+  ctx.lineWidth=Math.max(.65,S*.0012);
+  ctx.beginPath();
+  ctx.moveTo(sway*q,by+headSize*.25);
+  ctx.quadraticCurveTo(bx-side*S*.006,by-headSize*.45,bx,by-headSize*.50);
+  ctx.stroke();
+  drawWildBloom(bx,by-headSize*.52,headSize,c.color,c.phase+j,t);
+ }
+ // Una flor en la punta superior del tallo.
+ drawWildBloom(sway,base-len,S*.014*c.size,c.color,c.phase,t);
  ctx.restore();
 }
 
@@ -906,6 +1011,7 @@ function frame(t){
  wrapped(pads,1,S*.15,(p,x)=>drawPad(p,x,t));
  wrapped(frogs,1,S*.12,(f,x)=>drawFrog(f,x,t));
  wrapped(campanulas,1,S*.16,(c,x)=>drawCampanula(c,x,t));
+ wrapped(wildflowers,1,S*.17,(c,x)=>drawWildflower(c,x,t));
  wrapped(lotuses,1,S*.2,(f,x)=>drawLotus(f,x,t));
 
  drawReeds(t);
@@ -1198,6 +1304,9 @@ window.addEventListener('resize',setup,{passive:true});
 setup();
 requestAnimationFrame(frame);
 })();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
