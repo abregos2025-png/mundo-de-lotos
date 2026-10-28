@@ -24,18 +24,29 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06131e}
 <main id="world" aria-label="Pantano nocturno">
 <canvas id="scene" aria-label="Pantano nocturno con estrellas, flores de loto, campánulas y ranitas"></canvas>
 <div class="controls">
-<button class="control" id="leftBtn" aria-label="Explorar hacia la izquierda" title="Izquierda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-<button class="control" id="rightBtn" aria-label="Explorar hacia la derecha" title="Derecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-<button class="control" id="soundBtn" aria-label="Activar música y sonidos nocturnos" title="Música nocturna"><svg id="soundIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg></button>
-<button class="control" id="fullBtn" aria-label="Pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4"/></svg></button>
+<button class="control" id="leftBtn" aria-label="Explorar hacia la izquierda" title="Izquierda">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+</button>
+<button class="control" id="rightBtn" aria-label="Explorar hacia la derecha" title="Derecha">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+</button>
+<button class="control" id="soundBtn" aria-label="Activar música y sonidos nocturnos" title="Música nocturna">
+<svg id="soundIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+</button>
+<button class="control" id="fullBtn" aria-label="Pantalla completa" title="Pantalla completa">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4"/></svg>
+</button>
 </div>
 </main>
+
 <script>
 (()=>{
 'use strict';
 
-const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d',{alpha:false});
-const soundBtn=document.getElementById('soundBtn'),soundIcon=document.getElementById('soundIcon');
+const canvas=document.getElementById('scene');
+const ctx=canvas.getContext('2d',{alpha:false});
+const soundBtn=document.getElementById('soundBtn');
+const soundIcon=document.getElementById('soundIcon');
 
 let w=0,h=0,dpr=1,S=1,H=0,P=3000,cameraX=0;
 let stars=[],flies=[],pads=[],lotuses=[],campanulas=[],reeds=[],ripples=[],frogs=[];
@@ -57,25 +68,31 @@ function setup(){
  canvas.height=Math.round(h*dpr);
  ctx.setTransform(dpr,0,0,dpr,0,0);
 
- // Más estrellas y más estrellas luminosas.
+ // Estrellas brillantes repartidas por todo el cielo.
  stars=Array.from({
   length:Math.max(220,Math.min(520,Math.floor(w*h/2700)))
  },()=>{
   const bright=Math.random()<.18;
   return{
-   x:rnd(0,P),y:rnd(.012,.49),
+   x:rnd(0,P),
+   y:rnd(.012,.49),
    r:bright?rnd(1.8,3):rnd(.55,1.45),
    a:bright?rnd(.9,1):rnd(.4,.96),
-   p:rnd(0,7),speed:rnd(.4,1.7),
-   bright,cross:bright||Math.random()<.15
+   p:rnd(0,7),
+   speed:rnd(.4,1.7),
+   bright,
+   cross:bright||Math.random()<.15
   };
  });
 
  flies=Array.from({
   length:Math.max(30,Math.min(80,Math.floor(P/42)))
  },()=>({
-  x:rnd(0,P),y:rnd(.47,1.03),
-  r:rnd(.8,2.4),p:rnd(0,7),speed:rnd(.5,1.5)
+  x:rnd(0,P),
+  y:rnd(.47,1.03),
+  r:rnd(.8,2.4),
+  p:rnd(0,7),
+  speed:rnd(.5,1.5)
  }));
 
  pads=[];
@@ -85,39 +102,61 @@ function setup(){
  ripples=[];
  frogs=[];
 
- // Nenúfares y flores de loto por todo el pantano.
+ // Hojas acuáticas repartidas por el lago.
  for(let i=0;i<Math.floor(P/28);i++){
-  const x=rnd(0,P),y=rnd(.47,.99),front=y>.69;
+  const x=rnd(0,P);
+  const y=rnd(.49,.96);
+  const front=y>.69;
 
   pads.push({
    x,y,
    rx:rnd(front?.012:.008,front?.036:.019),
    ry:rnd(front?.005:.013,front?.009:.005),
-   rot:rnd(-.42,.42),tone:Math.random(),
+   rot:rnd(-.42,.42),
+   tone:Math.random(),
    depth:front?1:.58
   });
-
-  if(Math.random()<(front?.54:.34)){
-   lotuses.push({
-    x:x+rnd(-15,15),y:y-rnd(.005,.025),
-    size:rnd(front?.19:.12,front?.38:.26),
-    p:rnd(0,7),tone:Math.random(),
-    depth:front?1:.63
-   });
-  }
  }
 
- // Juncos y hierbas.
+ // Lotos distribuidos, bastantes pero sin amontonarse.
+ // Cada flor tendrá su propia hoja flotante.
+ const lotusSpacing=Math.max(95,S*.16);
+ const lotusRows=[.55,.72,.62,.78,.66];
+ const lotusCount=Math.floor(P/lotusSpacing);
+
+ for(let i=0;i<lotusCount;i++){
+  const x=(i+.5)*lotusSpacing+
+    rnd(-lotusSpacing*.12,lotusSpacing*.12);
+
+  const row=lotusRows[i%lotusRows.length];
+  const y=row+rnd(-.018,.018);
+
+  const depth=.66+
+    Math.max(0,Math.min(1,(y-.53)/.28))*.34;
+
+  lotuses.push({
+   x,y,
+   size:rnd(.15,.21),
+   p:rnd(0,7),
+   tone:Math.random(),
+   depth
+  });
+ }
+
+ // Juncos y hierbas del pantano.
  for(let i=0;i<Math.floor(P/20);i++){
   reeds.push({
-   x:rnd(0,P),base:rnd(.65,1.08),
-   len:rnd(.025,.15),bend:rnd(-.018,.018),
-   p:rnd(0,7),thick:rnd(.65,1.9),
+   x:rnd(0,P),
+   base:rnd(.65,1.08),
+   len:rnd(.025,.15),
+   bend:rnd(-.018,.018),
+   p:rnd(0,7),
+   thick:rnd(.65,1.9),
    front:Math.random()
   });
  }
 
- // Campánulas violetas y azules.
+ // Campánulas lilas, azules y violetas.
  const campColors=[
   '#9da8ff','#b4a0ff','#8caeff',
   '#d0b8f4','#d7d9ff','#9279e9'
@@ -125,21 +164,26 @@ function setup(){
 
  for(let i=0;i<Math.floor(P/42);i++){
   campanulas.push({
-   x:rnd(0,P),base:rnd(.64,1.02),
-   len:rnd(.048,.12),size:rnd(.72,1.36),
+   x:rnd(0,P),
+   base:rnd(.64,1.02),
+   len:rnd(.048,.12),
+   size:rnd(.72,1.36),
    count:1+Math.floor(Math.random()*4),
    color:campColors[Math.floor(Math.random()*campColors.length)],
    phase:rnd(0,7)
   });
  }
 
- // Ranitas distribuidas por el lago.
+ // Ranitas verdes distribuidas por la orilla.
  frogs=Array.from({
   length:Math.max(8,Math.min(14,Math.floor(P/300)))
  },()=>({
-  x:rnd(0,P),y:rnd(.65,.89),
-  size:rnd(.78,1.18),phase:rnd(0,7),
-  tone:Math.random(),jumpAt:-10000
+  x:rnd(0,P),
+  y:rnd(.65,.89),
+  size:rnd(.78,1.18),
+  phase:rnd(0,7),
+  tone:Math.random(),
+  jumpAt:-10000
  }));
 }
 
@@ -150,9 +194,11 @@ function gradient(x,y,r,c1,c2){
  return g;
 }
 
+// Paisaje repetido para que puedas explorar el lago.
 function wrapped(items,parallax,margin,draw){
  for(const o of items){
   const x=mod(o.x-cameraX*parallax,P);
+
   if(x>-margin&&x<w+margin)draw(o,x);
 
   const left=x-P;
@@ -174,11 +220,12 @@ function sky(t){
 
  ctx.fillStyle=gradient(
   w*.72,h*.19,S*.62,
-  'rgba(77,119,140,.19)','rgba(30,59,79,0)'
+  'rgba(77,119,140,.19)',
+  'rgba(30,59,79,0)'
  );
  ctx.fillRect(0,0,w,h*.72);
 
- // Estrellas mucho más luminosas, con halos y destellos.
+ // Estrellas con halos luminosos y destellos.
  wrapped(stars,.045,12,(s,x)=>{
   const sy=s.y*h;
   const tw=.62+.38*Math.sin(t*.00115*s.speed+s.p);
@@ -208,7 +255,8 @@ function sky(t){
 
   ctx.globalAlpha=a;
   ctx.fillStyle=s.bright?'#ffffff':
-   (s.cross?'#f6f3ff':'#dce9ef');
+    (s.cross?'#f6f3ff':'#dce9ef');
+
   ctx.beginPath();
   ctx.arc(x,sy,s.bright?s.r*1.12:s.r,0,Math.PI*2);
   ctx.fill();
@@ -217,6 +265,7 @@ function sky(t){
    ctx.globalAlpha=s.bright?.95*tw:a*.55;
    ctx.strokeStyle=s.bright?'#ffffff':'#e5eadf';
    ctx.lineWidth=s.bright?1.15:.6;
+
    const ray=s.bright?7+s.r*1.8:3.4;
 
    ctx.beginPath();
@@ -227,14 +276,15 @@ function sky(t){
    ctx.stroke();
   }
  });
+
  ctx.globalAlpha=1;
 
- // Luna llena grande, luminosa y visible desde el inicio.
+ // Luna llena grande, luminosa y siempre visible.
  const moonX=w*.79;
  const my=h*.17;
  const mr=Math.max(21,S*.055);
 
- // Halo exterior de la luna.
+ // Halo exterior.
  ctx.fillStyle=gradient(
   moonX,my,mr*7.8,
   'rgba(226,247,247,.34)',
@@ -244,7 +294,7 @@ function sky(t){
  ctx.arc(moonX,my,mr*7.8,0,Math.PI*2);
  ctx.fill();
 
- // Resplandor cercano.
+ // Resplandor de la luna.
  ctx.fillStyle=gradient(
   moonX,my,mr*3.1,
   'rgba(241,248,237,.38)',
@@ -254,20 +304,21 @@ function sky(t){
  ctx.arc(moonX,my,mr*3.1,0,Math.PI*2);
  ctx.fill();
 
- // Superficie lunar.
  const moonGrad=ctx.createRadialGradient(
   moonX-mr*.32,my-mr*.36,mr*.04,
   moonX,my,mr*1.1
  );
+
  moonGrad.addColorStop(0,'#fffdee');
  moonGrad.addColorStop(.58,'#edf3e6');
  moonGrad.addColorStop(1,'#becfce');
+
  ctx.fillStyle=moonGrad;
  ctx.beginPath();
  ctx.arc(moonX,my,mr,0,Math.PI*2);
  ctx.fill();
 
- // Pequeñas marcas sobre la luna.
+ // Marcas suaves sobre la superficie lunar.
  ctx.fillStyle='rgba(118,153,157,.22)';
  ctx.beginPath();
  ctx.arc(moonX-mr*.25,my-mr*.18,mr*.17,0,Math.PI*2);
@@ -281,7 +332,7 @@ function sky(t){
  ctx.arc(moonX,my,mr,0,Math.PI*2);
  ctx.stroke();
 
- // Ramas oscuras en las esquinas superiores.
+ // Ramas oscuras en las esquinas.
  ctx.strokeStyle='#04141c';
  ctx.lineCap='round';
 
@@ -306,7 +357,10 @@ function sky(t){
    ctx.lineWidth=1.5;
    ctx.beginPath();
    ctx.moveTo(bx,by);
-   ctx.quadraticCurveTo(bx+d*15,by+13,bx+d*24,by+26);
+   ctx.quadraticCurveTo(
+    bx+d*15,by+13,
+    bx+d*24,by+26
+   );
    ctx.stroke();
   }
  }
@@ -318,10 +372,11 @@ function water(t){
  g.addColorStop(.18,'#17444e');
  g.addColorStop(.55,'#0d303b');
  g.addColorStop(1,'#071c27');
+
  ctx.fillStyle=g;
  ctx.fillRect(0,H,w,h-H);
 
- // Reflejo de la luna alineado con su posición.
+ // Reflejo de la luna.
  const moonX=w*.79;
  const rg=ctx.createLinearGradient(moonX,H,moonX,h);
 
@@ -339,7 +394,7 @@ function water(t){
  ctx.closePath();
  ctx.fill();
 
- // Pequeños reflejos que se mueven sobre el agua.
+ // Pequeños reflejos sobre el agua.
  for(let i=0;i<180;i++){
   const y=H+Math.pow(i/180,1.55)*h*.59;
   const shift=Math.sin(t*.001+i*2.7)*7;
@@ -366,6 +421,7 @@ function water(t){
    'rgba(145,189,173,.065)',
    'rgba(145,189,173,0)'
   );
+
   ctx.fillRect(0,y-h*.045,w,h*.09);
  }
 }
@@ -411,8 +467,8 @@ function drawPad(p,x,t){
  ctx.translate(x,y);
  ctx.scale(scale,scale);
  ctx.rotate(p.rot);
- ctx.fillStyle=p.tone>.52?'#1b5149':'#17483f';
 
+ ctx.fillStyle=p.tone>.52?'#1b5149':'#17483f';
  ctx.beginPath();
  ctx.ellipse(0,0,rx,ry,0,.08,Math.PI*2-.13);
  ctx.lineTo(0,0);
@@ -432,122 +488,137 @@ function drawPad(p,x,t){
  ctx.lineTo(rx*.55,ry*.13);
  ctx.closePath();
  ctx.fill();
+
  ctx.restore();
 }
 
-// Lotos abiertos y redondos, vistos directamente desde arriba.
+// Lotos pequeños y naturales, vistos desde arriba,
+// cada uno flotando sobre su propia hoja.
 function drawLotus(f,x,t){
- const y=f.y*h+Math.sin(t*.0012+f.p)*.9;
- const z=Math.max(18,f.size*S*.44);
+ const y=f.y*h+Math.sin(t*.0012+f.p)*.45;
+ const z=Math.max(14,f.size*S*.20);
  const scale=f.depth;
- const sway=Math.sin(t*.0012+f.p)*z*.025;
+ const sway=Math.sin(t*.0012+f.p)*z*.012;
 
  ctx.save();
  ctx.translate(x+sway,y);
  ctx.scale(scale,scale);
 
- // Sombra suave sobre la superficie del agua.
- ctx.globalAlpha=.24;
+ // Sombra delicada sobre el agua.
+ ctx.globalAlpha=.17;
  ctx.fillStyle='#020e16';
  ctx.beginPath();
- ctx.ellipse(0,z*.10,z*1.02,z*.66,0,0,Math.PI*2);
+ ctx.ellipse(0,z*.08,z*1.22,z*.73,0,0,Math.PI*2);
  ctx.fill();
  ctx.globalAlpha=1;
 
- // Hoja verde que sostiene la flor flotante.
- const leafGrad=ctx.createLinearGradient(0,-z*.4,0,z*.65);
- leafGrad.addColorStop(0,'#28644e');
+ // Hoja verde flotante, un poco más grande que la flor.
+ const leafGrad=ctx.createLinearGradient(0,-z*.55,0,z*.7);
+ leafGrad.addColorStop(0,'#28634c');
  leafGrad.addColorStop(1,'#123d35');
+
  ctx.fillStyle=leafGrad;
  ctx.beginPath();
- ctx.ellipse(0,z*.18,z*.98,z*.58,0,0,Math.PI*2);
+ ctx.ellipse(0,z*.17,z*1.18,z*.70,0,0,Math.PI*2);
  ctx.fill();
 
- // Abertura de la hoja.
- ctx.fillStyle='#0d3039';
+ // Hendidura de la hoja.
+ ctx.fillStyle='#10313a';
  ctx.beginPath();
- ctx.moveTo(z*.96,z*.05);
- ctx.lineTo(z*.63,z*.17);
- ctx.lineTo(z*.70,z*.34);
+ ctx.moveTo(z*1.17,z*.08);
+ ctx.lineTo(z*.82,z*.18);
+ ctx.lineTo(z*.91,z*.34);
  ctx.closePath();
  ctx.fill();
 
- ctx.strokeStyle='rgba(196,226,219,.28)';
- ctx.lineWidth=Math.max(.7,z*.012);
+ // Nervaduras tenues de la hoja.
+ ctx.strokeStyle='rgba(172,210,169,.22)';
+ ctx.lineWidth=Math.max(.45,z*.012);
  ctx.beginPath();
- ctx.ellipse(0,z*.18,z*1.1,z*.66,0,0,Math.PI*2);
+ ctx.moveTo(0,z*.17);
+ ctx.lineTo(-z*.78,-z*.13);
+ ctx.moveTo(0,z*.17);
+ ctx.lineTo(-z*.74,z*.43);
+ ctx.moveTo(0,z*.17);
+ ctx.lineTo(z*.77,z*.40);
  ctx.stroke();
 
- // Pétalos violetas y lilas.
+ // Distintos tonos naturales de violeta y lila.
  const palettes=[
-  {edge:'#9273e2',mid:'#c4a3f1',base:'#f0e2ff'},
-  {edge:'#795acb',mid:'#ae8be9',base:'#e9d8ff'},
-  {edge:'#a07ae5',mid:'#ceb5f5',base:'#f4eaff'},
-  {edge:'#866bd8',mid:'#bca5f3',base:'#f2e6ff'}
+  {edge:'#9679d9',mid:'#c4a9e9',base:'#eadcf7'},
+  {edge:'#8068c9',mid:'#b6a0e5',base:'#e7dafa'},
+  {edge:'#a184d7',mid:'#cbb6ed',base:'#f0e5fb'},
+  {edge:'#806ac2',mid:'#b4a2de',base:'#e6dcf7'}
  ];
+
  const pal=palettes[Math.floor(f.tone*palettes.length)];
 
+ // Pétalos redondeados organizados en forma de roseta.
  function drawPetalRing(count,len,halfWidth,offset){
   for(let i=0;i<count;i++){
    const a=(i/count)*Math.PI*2+offset;
+
    ctx.save();
    ctx.rotate(a);
 
-   const petalGrad=ctx.createLinearGradient(0,-len,0,z*.18);
+   const petalGrad=ctx.createLinearGradient(0,-len,0,z*.12);
    petalGrad.addColorStop(0,pal.edge);
    petalGrad.addColorStop(.58,pal.mid);
    petalGrad.addColorStop(1,pal.base);
 
    ctx.fillStyle=petalGrad;
    ctx.beginPath();
-   ctx.moveTo(0,z*.09);
+   ctx.moveTo(0,z*.07);
    ctx.bezierCurveTo(
-    -halfWidth*.85,-len*.18,
-    -halfWidth,-len*.72,
+    -halfWidth*.83,-len*.12,
+    -halfWidth*.92,-len*.73,
     0,-len
    );
    ctx.bezierCurveTo(
-    halfWidth,-len*.72,
-    halfWidth*.85,-len*.18,
-    0,z*.09
+    halfWidth*.92,-len*.73,
+    halfWidth*.83,-len*.12,
+    0,z*.07
    );
+
    ctx.closePath();
    ctx.fill();
 
-   ctx.strokeStyle='rgba(255,247,255,.65)';
-   ctx.lineWidth=Math.max(.55,z*.009);
+   ctx.strokeStyle='rgba(255,249,255,.46)';
+   ctx.lineWidth=Math.max(.45,z*.009);
    ctx.stroke();
 
-   ctx.strokeStyle='rgba(255,255,255,.24)';
-   ctx.lineWidth=Math.max(.45,z*.006);
+   ctx.strokeStyle='rgba(255,255,255,.18)';
+   ctx.lineWidth=Math.max(.4,z*.005);
    ctx.beginPath();
-   ctx.moveTo(0,z*.03);
-   ctx.quadraticCurveTo(0,-len*.5,0,-len*.85);
+   ctx.moveTo(0,z*.02);
+   ctx.quadraticCurveTo(0,-len*.46,0,-len*.82);
    ctx.stroke();
 
    ctx.restore();
   }
  }
 
- // Tres capas de pétalos: flor redonda y completamente abierta.
- drawPetalRing(14,z*.98,z*.27,0);
- drawPetalRing(12,z*.78,z*.24,Math.PI/12);
- drawPetalRing(9,z*.55,z*.18,Math.PI/9);
+ // Tres capas pequeñas para una flor abierta y natural.
+ drawPetalRing(12,z*.88,z*.25,0);
+ drawPetalRing(10,z*.68,z*.22,Math.PI/10);
+ drawPetalRing(7,z*.43,z*.16,Math.PI/7);
 
- // Centro dorado de la flor.
- ctx.fillStyle='#cfb56c';
+ // Centro dorado.
+ ctx.fillStyle='#d5bd78';
  ctx.beginPath();
- ctx.arc(0,0,z*.13,0,Math.PI*2);
+ ctx.arc(0,0,z*.105,0,Math.PI*2);
  ctx.fill();
 
- ctx.fillStyle='#fff0b5';
- for(let i=0;i<12;i++){
+ ctx.fillStyle='#f5e9bd';
+ for(let i=0;i<9;i++){
   const a=i*2.399;
+
   ctx.beginPath();
   ctx.arc(
-   Math.cos(a)*z*.085,
-   Math.sin(a)*z*.085,
-   z*.022,0,Math.PI*2
+   Math.cos(a)*z*.064,
+   Math.sin(a)*z*.064,
+   Math.max(.45,z*.014),
+   0,Math.PI*2
   );
   ctx.fill();
  }
@@ -563,6 +634,7 @@ function drawBell(x,y,size,color,tilt){
  const bw=size*.48;
  const bh=size*.83;
  const g=ctx.createLinearGradient(-bw,0,bw,bh);
+
  g.addColorStop(0,color);
  g.addColorStop(.55,'#c5b8ff');
  g.addColorStop(1,'#736bca');
@@ -593,22 +665,26 @@ function drawBell(x,y,size,color,tilt){
  ctx.beginPath();
  ctx.arc(0,bh*.27,Math.max(.6,size*.045),0,Math.PI*2);
  ctx.fill();
+
  ctx.restore();
 }
 
 function drawCampanula(c,x,t){
- const base=c.base*h,len=c.len*h;
+ const base=c.base*h;
+ const len=c.len*h;
  const depth=.53+.78*Math.max(0,(c.base-.6)/.42);
  const sway=Math.sin(t*.00085+c.phase)*S*.014*c.size;
 
  ctx.save();
  ctx.translate(x,0);
  ctx.scale(depth,depth);
+
  const stemX=sway;
 
  ctx.strokeStyle='#275342';
  ctx.lineWidth=Math.max(.8,S*.0018);
  ctx.lineCap='round';
+
  ctx.beginPath();
  ctx.moveTo(0,base);
  ctx.bezierCurveTo(
@@ -622,6 +698,7 @@ function drawCampanula(c,x,t){
   const q=.28+i*.18;
   const ly=base-len*q;
   const side=i%2?1:-1;
+
   ctx.fillStyle=i%2?'#24513e':'#2a6048';
   ctx.beginPath();
   ctx.moveTo(stemX*q,ly);
@@ -649,13 +726,19 @@ function drawCampanula(c,x,t){
   ctx.quadraticCurveTo(fx,fy-size*.1,fx,fy);
   ctx.stroke();
 
-  drawBell(fx,fy,size,c.color,Math.sin(t*.0007+c.phase+j)*.2);
+  drawBell(
+   fx,fy,size,c.color,
+   Math.sin(t*.0007+c.phase+j)*.2
+  );
  }
+
  ctx.restore();
 }
 
 function drawFrog(f,x,t){
- const size=S*.039*f.size*(.62+Math.max(0,(f.y-.62)/.28)*.55);
+ const size=S*.039*f.size*
+  (.62+Math.max(0,(f.y-.62)/.28)*.55);
+
  const age=t-f.jumpAt;
  const jumping=age>=0&&age<760;
  const jump=jumping?Math.sin(age/760*Math.PI)*size*3.2:0;
@@ -681,6 +764,7 @@ function drawFrog(f,x,t){
  ctx.strokeStyle=dark;
  ctx.lineWidth=Math.max(1.4,size*.13);
  ctx.lineCap='round';
+
  ctx.beginPath();
  ctx.moveTo(-size*.35,y+size*.12);
  ctx.lineTo(-size*.78,y+size*.39);
@@ -694,6 +778,7 @@ function drawFrog(f,x,t){
  ctx.beginPath();
  ctx.ellipse(0,y+size*.12,size*.72,size*.43,0,0,Math.PI*2);
  ctx.fill();
+
  ctx.beginPath();
  ctx.ellipse(0,y-size*.12,size*.57,size*.42,0,0,Math.PI*2);
  ctx.fill();
@@ -720,26 +805,35 @@ function drawFrog(f,x,t){
  ctx.beginPath();
  ctx.arc(0,y+size*.01,size*.22,.22,Math.PI-.22);
  ctx.stroke();
+
  ctx.restore();
 }
 
 function drawReeds(t){
  wrapped(reeds,1,S*.15,(r,x)=>{
-  const base=r.base*h,len=r.len*h;
+  const base=r.base*h;
+  const len=r.len*h;
   const sw=Math.sin(t*.0008+r.p)*w*.005;
 
   ctx.strokeStyle=r.front>.55?'#12392f':'#163e36';
   ctx.lineWidth=r.thick;
   ctx.lineCap='round';
+
   ctx.beginPath();
   ctx.moveTo(x,base);
-  ctx.quadraticCurveTo(x+sw*.45,base-len*.55,x+sw+r.bend*S,base-len);
+  ctx.quadraticCurveTo(
+   x+sw*.45,base-len*.55,
+   x+sw+r.bend*S,base-len
+  );
   ctx.stroke();
 
   if(r.len>.075){
    ctx.fillStyle='#21493a';
    ctx.beginPath();
-   ctx.ellipse(x+sw+r.bend*S,base-len,r.thick*1.5,len*.055,-.22,0,Math.PI*2);
+   ctx.ellipse(
+    x+sw+r.bend*S,base-len,
+    r.thick*1.5,len*.055,-.22,0,Math.PI*2
+   );
    ctx.fill();
   }
  });
@@ -763,6 +857,7 @@ function fireflies(t){
    'rgba(191,232,147,.54)',
    'rgba(191,232,147,0)'
   );
+
   ctx.beginPath();
   ctx.arc(x,y,f.r*7,0,Math.PI*2);
   ctx.fill();
@@ -773,6 +868,7 @@ function fireflies(t){
   ctx.arc(x,y,f.r*.72,0,Math.PI*2);
   ctx.fill();
  });
+
  ctx.globalAlpha=1;
 }
 
@@ -782,16 +878,23 @@ function drawRipples(t){
  for(const r of ripples){
   const p=(t-r.t)/1900;
   const rad=p*S*.15;
+
   ctx.globalAlpha=(1-p)*.58;
   ctx.strokeStyle='#c0dfd9';
   ctx.lineWidth=1;
 
   for(let k=0;k<2;k++){
    ctx.beginPath();
-   ctx.ellipse(r.x,r.y,rad*(1+k*.48),rad*(.19+k*.045),0,0,Math.PI*2);
+   ctx.ellipse(
+    r.x,r.y,
+    rad*(1+k*.48),
+    rad*(.19+k*.045),
+    0,0,Math.PI*2
+   );
    ctx.stroke();
   }
  }
+
  ctx.globalAlpha=1;
 }
 
@@ -813,6 +916,7 @@ function frame(t){
   w*.5,h*.48,S*.18,
   w*.5,h*.48,Math.max(w,h)*.77
  );
+
  v.addColorStop(0,'rgba(0,0,0,0)');
  v.addColorStop(1,'rgba(0,6,12,.35)');
  ctx.fillStyle=v;
@@ -822,11 +926,14 @@ function frame(t){
 }
 
 // Botones para explorar el paisaje.
-function moveView(d){cameraX+=d*w*.42;}
+function moveView(d){
+ cameraX+=d*w*.42;
+}
+
 document.getElementById('leftBtn').addEventListener('click',()=>moveView(-1));
 document.getElementById('rightBtn').addEventListener('click',()=>moveView(1));
 
-// Arrastrar el paisaje y tocar el agua para crear ondas.
+// Arrastrar el paisaje con el ratón o el dedo.
 canvas.addEventListener('pointerdown',e=>{
  dragging=true;
  didDrag=false;
@@ -834,19 +941,24 @@ canvas.addEventListener('pointerdown',e=>{
  dragStartX=e.clientX;
  lastPointerX=e.clientX;
  canvas.classList.add('dragging');
+
  try{canvas.setPointerCapture(pointerId)}catch(_){}
 });
 
 canvas.addEventListener('pointermove',e=>{
  if(!dragging||e.pointerId!==pointerId)return;
+
  const dx=e.clientX-lastPointerX;
+
  if(Math.abs(e.clientX-dragStartX)>4)didDrag=true;
+
  cameraX-=dx;
  lastPointerX=e.clientX;
 });
 
 function endPointer(e){
  if(!dragging)return;
+
  dragging=false;
  canvas.classList.remove('dragging');
 
@@ -856,19 +968,27 @@ function endPointer(e){
   const tapY=Math.max(H,e.clientY-r.top);
   const now=performance.now();
 
+  // Tocar el agua produce ondas.
   ripples.push({x:tapX,y:tapY,t:now});
 
+  // Tocar cerca de una ranita la hace saltar.
   for(const frog of frogs){
    const fx=mod(frog.x-cameraX,P);
+
    for(const candidateX of [fx,fx-P,fx+P]){
     if(Math.hypot(candidateX-tapX,frog.y*h-tapY)<S*.14){
      frog.jumpAt=now;
-     ripples.push({x:candidateX,y:frog.y*h+S*.015,t:now});
+     ripples.push({
+      x:candidateX,
+      y:frog.y*h+S*.015,
+      t:now
+     });
      break;
     }
    }
   }
  }
+
  pointerId=null;
 }
 
@@ -876,11 +996,18 @@ canvas.addEventListener('pointerup',endPointer);
 canvas.addEventListener('pointercancel',endPointer);
 
 window.addEventListener('keydown',e=>{
- if(e.key==='ArrowRight'){cameraX+=w*.1;e.preventDefault();}
- if(e.key==='ArrowLeft'){cameraX-=w*.1;e.preventDefault();}
+ if(e.key==='ArrowRight'){
+  cameraX+=w*.1;
+  e.preventDefault();
+ }
+
+ if(e.key==='ArrowLeft'){
+  cameraX-=w*.1;
+  e.preventDefault();
+ }
 });
 
-// Música nocturna y sonidos ambientales creados en el navegador.
+// Música nocturna original y ambiente generados en el navegador.
 function startAudio(){
  const AC=window.AudioContext||window.webkitAudioContext;
  if(!AC)return null;
@@ -893,11 +1020,12 @@ function startAudio(){
  master.gain.value=.0001;
  music.gain.value=.58;
  amb.gain.value=.2;
+
  music.connect(master);
  amb.connect(master);
  master.connect(ac.destination);
 
- // Ruido ambiental suave, como agua y brisa.
+ // Ruido ambiental suave.
  const buf=ac.createBuffer(1,ac.sampleRate*3,ac.sampleRate);
  const data=buf.getChannelData(0);
  let brown=0;
@@ -916,11 +1044,13 @@ function startAudio(){
  low.type='lowpass';
  low.frequency.value=430;
  ng.gain.value=.3;
+
  noise.connect(low);
  low.connect(ng);
  ng.connect(amb);
  noise.start();
 
+ // Tono ambiental muy tenue.
  const insect=ac.createOscillator();
  const ig=ac.createGain();
  const lfo=ac.createOscillator();
@@ -929,6 +1059,7 @@ function startAudio(){
  insect.type='sine';
  insect.frequency.value=3900;
  ig.gain.value=.0003;
+
  insect.connect(ig);
  ig.connect(amb);
  insect.start();
@@ -947,15 +1078,19 @@ function playNote(){
 
  const ac=audio.ac;
  const now=ac.currentTime;
- const notes=[146.83,174.61,220,196,164.81,130.81,174.61,220,196,164.81,146.83,130.81];
- const freq=notes[note++%notes.length];
+ const notes=[
+  146.83,174.61,220,196,164.81,130.81,
+  174.61,220,196,164.81,146.83,130.81
+ ];
 
+ const freq=notes[note++%notes.length];
  const osc=ac.createOscillator();
  const g=ac.createGain();
  const filter=ac.createBiquadFilter();
 
  osc.type='sine';
  osc.frequency.value=freq;
+
  filter.type='lowpass';
  filter.frequency.value=900;
 
@@ -966,6 +1101,7 @@ function playNote(){
  osc.connect(filter);
  filter.connect(g);
  g.connect(audio.music);
+
  osc.start(now);
  osc.stop(now+5.3);
 
@@ -975,19 +1111,24 @@ function playNote(){
 
   bell.type='sine';
   bell.frequency.value=freq*2;
+
   bg.gain.setValueAtTime(.0001,now);
   bg.gain.linearRampToValueAtTime(.018,now+.8);
   bg.gain.exponentialRampToValueAtTime(.0001,now+4.3);
 
   bell.connect(bg);
   bg.connect(audio.music);
+
   bell.start(now);
   bell.stop(now+4.4);
  }
 }
 
 async function toggleSound(){
- if(!audio){audio=startAudio();if(!audio)return;}
+ if(!audio){
+  audio=startAudio();
+  if(!audio)return;
+ }
 
  try{
   if(audio.ac.state==='suspended')await audio.ac.resume();
@@ -997,20 +1138,33 @@ async function toggleSound(){
 
   audio.master.gain.cancelScheduledValues(now);
   audio.master.gain.setTargetAtTime(
-   audioOn?.72:.0001,now,audioOn?.8:.25
+   audioOn?.72:.0001,
+   now,
+   audioOn?.8:.25
   );
 
   if(audioOn){
-   if(!timer){playNote();timer=setInterval(playNote,3900);}
+   if(!timer){
+    playNote();
+    timer=setInterval(playNote,3900);
+   }
 
-   soundBtn.setAttribute('aria-label','Pausar música y sonidos nocturnos');
+   soundBtn.setAttribute(
+    'aria-label',
+    'Pausar música y sonidos nocturnos'
+   );
+
    soundIcon.innerHTML=
     '<path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a7.5 7.5 0 0 1 0 10"/>';
   }else{
    clearInterval(timer);
    timer=null;
 
-   soundBtn.setAttribute('aria-label','Activar música y sonidos nocturnos');
+   soundBtn.setAttribute(
+    'aria-label',
+    'Activar música y sonidos nocturnos'
+   );
+
    soundIcon.innerHTML=
     '<path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M17 9l5 6M22 9l-5 6"/>';
   }
@@ -1021,20 +1175,26 @@ soundBtn.addEventListener('click',toggleSound);
 
 document.getElementById('fullBtn').addEventListener('click',async()=>{
  try{
-  if(!document.fullscreenElement)
+  if(!document.fullscreenElement){
    await document.getElementById('world').requestFullscreen();
-  else
+  }else{
    await document.exitFullscreen();
+  }
  }catch(_){}
 });
 
 document.addEventListener('visibilitychange',()=>{
  if(!audio)return;
- if(document.hidden&&audio.ac.state==='running')audio.ac.suspend();
- else if(!document.hidden&&audioOn&&audio.ac.state==='suspended')audio.ac.resume();
+
+ if(document.hidden&&audio.ac.state==='running'){
+  audio.ac.suspend();
+ }else if(!document.hidden&&audioOn&&audio.ac.state==='suspended'){
+  audio.ac.resume();
+ }
 });
 
 window.addEventListener('resize',setup,{passive:true});
+
 setup();
 requestAnimationFrame(frame);
 })();
