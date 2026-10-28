@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#06131e">
 <meta name="description" content="Pantano nocturno con estrellas brillantes, flores de loto, campánulas, luciérnagas y ranitas interactivas.">
-<title></title>
+<title>Mundo de Lotos</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06131e}
@@ -24,21 +24,12 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06131e}
 <main id="world" aria-label="Pantano nocturno">
 <canvas id="scene" aria-label="Pantano nocturno con estrellas, flores de loto, campánulas y ranitas"></canvas>
 <div class="controls">
-<button class="control" id="leftBtn" aria-label="Explorar hacia la izquierda" title="Izquierda">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-</button>
-<button class="control" id="rightBtn" aria-label="Explorar hacia la derecha" title="Derecha">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-</button>
-<button class="control" id="soundBtn" aria-label="Activar música y sonidos nocturnos" title="Música nocturna">
-<svg id="soundIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
-</button>
-<button class="control" id="fullBtn" aria-label="Pantalla completa" title="Pantalla completa">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4"/></svg>
-</button>
+<button class="control" id="leftBtn" aria-label="Explorar hacia la izquierda" title="Izquierda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+<button class="control" id="rightBtn" aria-label="Explorar hacia la derecha" title="Derecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<button class="control" id="soundBtn" aria-label="Activar música y sonidos nocturnos" title="Música nocturna"><svg id="soundIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg></button>
+<button class="control" id="fullBtn" aria-label="Pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4"/></svg></button>
 </div>
 </main>
-
 <script>
 (()=>{
 'use strict';
@@ -66,16 +57,17 @@ function setup(){
  canvas.height=Math.round(h*dpr);
  ctx.setTransform(dpr,0,0,dpr,0,0);
 
+ // Más estrellas y más estrellas luminosas.
  stars=Array.from({
-  length:Math.max(180,Math.min(460,Math.floor(w*h/3100)))
+  length:Math.max(220,Math.min(520,Math.floor(w*h/2700)))
  },()=>{
-  let bright=Math.random()<.055;
+  const bright=Math.random()<.18;
   return{
-   x:rnd(0,P),y:rnd(.012,.50),
-   r:bright?rnd(1.35,2.3):rnd(.4,1.35),
-   a:bright?rnd(.78,1):rnd(.3,.94),
+   x:rnd(0,P),y:rnd(.012,.49),
+   r:bright?rnd(1.8,3):rnd(.55,1.45),
+   a:bright?rnd(.9,1):rnd(.4,.96),
    p:rnd(0,7),speed:rnd(.4,1.7),
-   bright,cross:bright||Math.random()<.07
+   bright,cross:bright||Math.random()<.15
   };
  });
 
@@ -95,7 +87,7 @@ function setup(){
 
  // Nenúfares y flores de loto por todo el pantano.
  for(let i=0;i<Math.floor(P/28);i++){
-  let x=rnd(0,P),y=rnd(.47,.99),front=y>.69;
+  const x=rnd(0,P),y=rnd(.47,.99),front=y>.69;
 
   pads.push({
    x,y,
@@ -115,17 +107,21 @@ function setup(){
   }
  }
 
- // Juncos y hierbas largas.
+ // Juncos y hierbas.
  for(let i=0;i<Math.floor(P/20);i++){
   reeds.push({
    x:rnd(0,P),base:rnd(.65,1.08),
    len:rnd(.025,.15),bend:rnd(-.018,.018),
-   p:rnd(0,7),thick:rnd(.65,1.9),front:Math.random()
+   p:rnd(0,7),thick:rnd(.65,1.9),
+   front:Math.random()
   });
  }
 
- // Campánulas azules, lilas y violetas.
- const campColors=['#9da8ff','#b4a0ff','#8caeff','#d0b8f4','#d7d9ff','#9279e9'];
+ // Campánulas violetas y azules.
+ const campColors=[
+  '#9da8ff','#b4a0ff','#8caeff',
+  '#d0b8f4','#d7d9ff','#9279e9'
+ ];
 
  for(let i=0;i<Math.floor(P/42);i++){
   campanulas.push({
@@ -137,7 +133,7 @@ function setup(){
   });
  }
 
- // Ranitas repartidas por las orillas del lago.
+ // Ranitas distribuidas por el lago.
  frogs=Array.from({
   length:Math.max(8,Math.min(14,Math.floor(P/300)))
  },()=>({
@@ -148,13 +144,12 @@ function setup(){
 }
 
 function gradient(x,y,r,c1,c2){
- let g=ctx.createRadialGradient(x,y,0,x,y,r);
+ const g=ctx.createRadialGradient(x,y,0,x,y,r);
  g.addColorStop(0,c1);
  g.addColorStop(1,c2);
  return g;
 }
 
-// Repite el paisaje para poder explorarlo sin un final visible.
 function wrapped(items,parallax,margin,draw){
  for(const o of items){
   const x=mod(o.x-cameraX*parallax,P);
@@ -169,7 +164,7 @@ function wrapped(items,parallax,margin,draw){
 }
 
 function sky(t){
- let g=ctx.createLinearGradient(0,0,0,h);
+ const g=ctx.createLinearGradient(0,0,0,h);
  g.addColorStop(0,'#020611');
  g.addColorStop(.36,'#071925');
  g.addColorStop(.67,'#102f38');
@@ -183,89 +178,130 @@ function sky(t){
  );
  ctx.fillRect(0,0,w,h*.72);
 
- // Estrellas y estrellas especialmente brillantes.
- wrapped(stars,.045,10,(s,x)=>{
-  let tw=.52+.48*Math.sin(t*.001*s.speed+s.p);
-  let a=s.a*tw;
+ // Estrellas mucho más luminosas, con halos y destellos.
+ wrapped(stars,.045,12,(s,x)=>{
+  const sy=s.y*h;
+  const tw=.62+.38*Math.sin(t*.00115*s.speed+s.p);
+  const a=s.a*tw;
 
   if(s.bright){
-   ctx.globalAlpha=.9*tw;
+   ctx.globalAlpha=.95*tw;
    ctx.fillStyle=gradient(
-    x,s.y*h,s.r*8,
-    'rgba(224,239,255,.72)','rgba(224,239,255,0)'
+    x,sy,s.r*10,
+    'rgba(244,249,255,.95)',
+    'rgba(220,236,255,0)'
    );
    ctx.beginPath();
-   ctx.arc(x,s.y*h,s.r*8,0,Math.PI*2);
+   ctx.arc(x,sy,s.r*10,0,Math.PI*2);
+   ctx.fill();
+
+   ctx.globalAlpha=.88*tw;
+   ctx.fillStyle=gradient(
+    x,sy,s.r*4.5,
+    'rgba(255,255,255,.98)',
+    'rgba(215,232,255,0)'
+   );
+   ctx.beginPath();
+   ctx.arc(x,sy,s.r*4.5,0,Math.PI*2);
    ctx.fill();
   }
 
   ctx.globalAlpha=a;
-  ctx.fillStyle=s.bright?'#fffce9':(s.cross?'#f3efd8':'#dce9ef');
+  ctx.fillStyle=s.bright?'#ffffff':
+   (s.cross?'#f6f3ff':'#dce9ef');
   ctx.beginPath();
-  ctx.arc(x,s.y*h,s.r,0,Math.PI*2);
+  ctx.arc(x,sy,s.bright?s.r*1.12:s.r,0,Math.PI*2);
   ctx.fill();
 
-  if((s.cross||s.bright)&&s.r>1.1){
-   ctx.globalAlpha=a*(s.bright?.9:.42);
-   ctx.strokeStyle=s.bright?'#fff9df':'#e5eadf';
-   ctx.lineWidth=s.bright?1:.6;
-   let ray=s.bright?5.5:3;
+  if(s.bright||(s.cross&&s.r>1)){
+   ctx.globalAlpha=s.bright?.95*tw:a*.55;
+   ctx.strokeStyle=s.bright?'#ffffff':'#e5eadf';
+   ctx.lineWidth=s.bright?1.15:.6;
+   const ray=s.bright?7+s.r*1.8:3.4;
 
    ctx.beginPath();
-   ctx.moveTo(x-ray,s.y*h);
-   ctx.lineTo(x+ray,s.y*h);
-   ctx.moveTo(x,s.y*h-ray);
-   ctx.lineTo(x,s.y*h+ray);
+   ctx.moveTo(x-ray,sy);
+   ctx.lineTo(x+ray,sy);
+   ctx.moveTo(x,sy-ray);
+   ctx.lineTo(x,sy+ray);
    ctx.stroke();
   }
  });
  ctx.globalAlpha=1;
 
- // Luna con halo suave.
- const moonX=mod(P*.77-cameraX*.15,P);
- const my=h*.18,mr=S*.047;
+ // Luna llena grande, luminosa y visible desde el inicio.
+ const moonX=w*.79;
+ const my=h*.17;
+ const mr=Math.max(21,S*.055);
 
- for(const m of [moonX,moonX-P,moonX+P]){
-  if(m>-mr*6&&m<w+mr*6){
-   ctx.fillStyle=gradient(
-    m,my,mr*5.8,
-    'rgba(199,220,220,.18)','rgba(180,212,211,0)'
-   );
-   ctx.beginPath();
-   ctx.arc(m,my,mr*5.8,0,Math.PI*2);
-   ctx.fill();
+ // Halo exterior de la luna.
+ ctx.fillStyle=gradient(
+  moonX,my,mr*7.8,
+  'rgba(226,247,247,.34)',
+  'rgba(190,230,235,0)'
+ );
+ ctx.beginPath();
+ ctx.arc(moonX,my,mr*7.8,0,Math.PI*2);
+ ctx.fill();
 
-   ctx.fillStyle='#e0e8dc';
-   ctx.beginPath();
-   ctx.arc(m,my,mr,0,Math.PI*2);
-   ctx.fill();
+ // Resplandor cercano.
+ ctx.fillStyle=gradient(
+  moonX,my,mr*3.1,
+  'rgba(241,248,237,.38)',
+  'rgba(210,233,235,0)'
+ );
+ ctx.beginPath();
+ ctx.arc(moonX,my,mr*3.1,0,Math.PI*2);
+ ctx.fill();
 
-   ctx.fillStyle='rgba(142,169,174,.28)';
-   ctx.beginPath();
-   ctx.arc(m-mr*.22,my-mr*.18,mr*.18,0,Math.PI*2);
-   ctx.arc(m+mr*.26,my+mr*.21,mr*.12,0,Math.PI*2);
-   ctx.fill();
-  }
- }
+ // Superficie lunar.
+ const moonGrad=ctx.createRadialGradient(
+  moonX-mr*.32,my-mr*.36,mr*.04,
+  moonX,my,mr*1.1
+ );
+ moonGrad.addColorStop(0,'#fffdee');
+ moonGrad.addColorStop(.58,'#edf3e6');
+ moonGrad.addColorStop(1,'#becfce');
+ ctx.fillStyle=moonGrad;
+ ctx.beginPath();
+ ctx.arc(moonX,my,mr,0,Math.PI*2);
+ ctx.fill();
 
- // Ramas oscuras en las esquinas.
+ // Pequeñas marcas sobre la luna.
+ ctx.fillStyle='rgba(118,153,157,.22)';
+ ctx.beginPath();
+ ctx.arc(moonX-mr*.25,my-mr*.18,mr*.17,0,Math.PI*2);
+ ctx.arc(moonX+mr*.25,my+mr*.22,mr*.12,0,Math.PI*2);
+ ctx.arc(moonX-mr*.10,my+mr*.34,mr*.09,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.strokeStyle='rgba(255,255,245,.55)';
+ ctx.lineWidth=1;
+ ctx.beginPath();
+ ctx.arc(moonX,my,mr,0,Math.PI*2);
+ ctx.stroke();
+
+ // Ramas oscuras en las esquinas superiores.
  ctx.strokeStyle='#04141c';
  ctx.lineCap='round';
 
  for(let side=0;side<2;side++){
-  let x=side?w:0,d=side?-1:1;
+  const x=side?w:0;
+  const d=side?-1:1;
 
   ctx.lineWidth=Math.max(3,S*.008);
   ctx.beginPath();
   ctx.moveTo(x,0);
   ctx.bezierCurveTo(
-   x+d*w*.08,h*.03,x+d*w*.1,h*.1,x+d*w*.16,h*.14
+   x+d*w*.08,h*.03,
+   x+d*w*.1,h*.1,
+   x+d*w*.16,h*.14
   );
   ctx.stroke();
 
   for(let j=0;j<6;j++){
-   let bx=x+d*w*(.032+j*.019);
-   let by=h*(.025+(j%4)*.03);
+   const bx=x+d*w*(.032+j*.019);
+   const by=h*(.025+(j%4)*.03);
 
    ctx.lineWidth=1.5;
    ctx.beginPath();
@@ -277,7 +313,7 @@ function sky(t){
 }
 
 function water(t){
- let g=ctx.createLinearGradient(0,H,0,h);
+ const g=ctx.createLinearGradient(0,H,0,h);
  g.addColorStop(0,'#24545d');
  g.addColorStop(.18,'#17444e');
  g.addColorStop(.55,'#0d303b');
@@ -285,37 +321,33 @@ function water(t){
  ctx.fillStyle=g;
  ctx.fillRect(0,H,w,h-H);
 
- // Reflejo más claro y ancho de la luna.
- const moonX=mod(P*.77-cameraX*.15,P);
+ // Reflejo de la luna alineado con su posición.
+ const moonX=w*.79;
+ const rg=ctx.createLinearGradient(moonX,H,moonX,h);
 
- for(const mx of [moonX,moonX-P,moonX+P]){
-  if(mx>-w*.2&&mx<w*1.2){
-   let rg=ctx.createLinearGradient(mx,H,mx,h);
-   rg.addColorStop(0,'rgba(226,244,229,.48)');
-   rg.addColorStop(.22,'rgba(183,224,218,.27)');
-   rg.addColorStop(.58,'rgba(111,177,179,.11)');
-   rg.addColorStop(1,'rgba(84,134,138,0)');
+ rg.addColorStop(0,'rgba(226,244,229,.57)');
+ rg.addColorStop(.18,'rgba(183,224,218,.32)');
+ rg.addColorStop(.58,'rgba(111,177,179,.13)');
+ rg.addColorStop(1,'rgba(84,134,138,0)');
 
-   ctx.fillStyle=rg;
-   ctx.beginPath();
-   ctx.moveTo(mx-w*.035,H);
-   ctx.lineTo(mx+w*.035,H);
-   ctx.lineTo(mx+w*.19,h);
-   ctx.lineTo(mx-w*.19,h);
-   ctx.closePath();
-   ctx.fill();
-  }
- }
+ ctx.fillStyle=rg;
+ ctx.beginPath();
+ ctx.moveTo(moonX-w*.035,H);
+ ctx.lineTo(moonX+w*.035,H);
+ ctx.lineTo(moonX+w*.19,h);
+ ctx.lineTo(moonX-w*.19,h);
+ ctx.closePath();
+ ctx.fill();
 
- // Reflejos que se mueven sobre el agua.
+ // Pequeños reflejos que se mueven sobre el agua.
  for(let i=0;i<180;i++){
-  let y=H+Math.pow(i/180,1.55)*h*.59;
-  let shift=Math.sin(t*.001+i*2.7)*7;
-  let spread=(y-H)*.82+8;
-  let shimmer=.62+.38*Math.sin(t*.0007+i*1.73);
-  let a=(1-i/195)*(.065+(i%7)*.009)*shimmer;
-  let half=spread*(.25+(i%5)*.13);
-  let x=mod(i*73+cameraX*.13,w+180)-90+shift;
+  const y=H+Math.pow(i/180,1.55)*h*.59;
+  const shift=Math.sin(t*.001+i*2.7)*7;
+  const spread=(y-H)*.82+8;
+  const shimmer=.62+.38*Math.sin(t*.0007+i*1.73);
+  const a=(1-i/195)*(.065+(i%7)*.009)*shimmer;
+  const half=spread*(.25+(i%5)*.13);
+  const x=mod(i*73+cameraX*.13,w+180)-90+shift;
 
   ctx.strokeStyle=`rgba(203,230,219,${a})`;
   ctx.lineWidth=.75+(i%3)*.25;
@@ -326,11 +358,13 @@ function water(t){
  }
 
  for(let b=0;b<4;b++){
-  let y=h*(.49+b*.09);
-  let d=Math.sin(t*.00012+b*2)*w*.04;
+  const y=h*(.49+b*.09);
+  const d=Math.sin(t*.00012+b*2)*w*.04;
+
   ctx.fillStyle=gradient(
    w*.44+d,y,w*.44,
-   'rgba(145,189,173,.065)','rgba(145,189,173,0)'
+   'rgba(145,189,173,.065)',
+   'rgba(145,189,173,0)'
   );
   ctx.fillRect(0,y-h*.045,w,h*.09);
  }
@@ -344,17 +378,20 @@ function treeLine(t){
  ];
 
  for(let li=0;li<layers.length;li++){
-  const L=layers[li],base=H+h*(.025+li*.012);
+  const L=layers[li];
+  const base=H+h*(.025+li*.012);
+
   ctx.fillStyle=L.color;
   ctx.beginPath();
   ctx.moveTo(0,base);
 
   for(let sx=-8;sx<=w+8;sx+=5){
-   let u=(cameraX*L.speed+sx)/P*Math.PI*2;
-   let y=h*(.315+L.offset)
+   const u=(cameraX*L.speed+sx)/P*Math.PI*2;
+   const y=h*(.315+L.offset)
     +Math.sin(u*5+li*1.8)*h*L.amp
     +Math.sin(u*11+li*.9)*h*.009
     +Math.sin(u*19+1.3)*h*.004;
+
    ctx.lineTo(sx,y);
   }
 
@@ -365,15 +402,17 @@ function treeLine(t){
 }
 
 function drawPad(p,x,t){
- let scale=p.depth;
- let y=p.y*h+Math.sin(t*.001+p.rot*8+p.x*.03)*1.1;
- let rx=p.rx*S*2.2,ry=p.ry*S*2.1;
+ const scale=p.depth;
+ const y=p.y*h+Math.sin(t*.001+p.rot*8+p.x*.03)*1.1;
+ const rx=p.rx*S*2.2;
+ const ry=p.ry*S*2.1;
 
  ctx.save();
  ctx.translate(x,y);
  ctx.scale(scale,scale);
  ctx.rotate(p.rot);
  ctx.fillStyle=p.tone>.52?'#1b5149':'#17483f';
+
  ctx.beginPath();
  ctx.ellipse(0,0,rx,ry,0,.08,Math.PI*2-.13);
  ctx.lineTo(0,0);
@@ -396,63 +435,123 @@ function drawPad(p,x,t){
  ctx.restore();
 }
 
+// Lotos abiertos y redondos, vistos directamente desde arriba.
 function drawLotus(f,x,t){
- let y=f.y*h,z=f.size*S*.37,scale=f.depth;
- let sway=Math.sin(t*.0012+f.p)*z*.09;
+ const y=f.y*h+Math.sin(t*.0012+f.p)*.9;
+ const z=Math.max(18,f.size*S*.44);
+ const scale=f.depth;
+ const sway=Math.sin(t*.0012+f.p)*z*.025;
 
  ctx.save();
  ctx.translate(x+sway,y);
  ctx.scale(scale,scale);
 
- ctx.globalAlpha=.2;
- ctx.fillStyle='#c2b6ff';
+ // Sombra suave sobre la superficie del agua.
+ ctx.globalAlpha=.24;
+ ctx.fillStyle='#020e16';
  ctx.beginPath();
- ctx.ellipse(0,z*.48,z*.67,z*.15,0,0,Math.PI*2);
+ ctx.ellipse(0,z*.10,z*1.02,z*.66,0,0,Math.PI*2);
  ctx.fill();
  ctx.globalAlpha=1;
 
- const pal=[
-  ['#edf0ff','#b8c5ff','#777fd1'],
-  ['#f0e0ff','#c1a2f2','#8060b8'],
-  ['#d7e8ff','#93b6ee','#586fb0'],
-  ['#f4dcff','#c39be8','#8e66bd']
- ][Math.floor(f.tone*4)];
-
- for(let i=0;i<10;i++){
-  let a=i/10*Math.PI*2-Math.PI/2,len=z*(i%2?.72:.92);
-  ctx.save();
-  ctx.translate(Math.cos(a)*z*.25,Math.sin(a)*z*.20);
-  ctx.rotate(a+Math.PI/2);
-
-  let g=ctx.createLinearGradient(0,-len*.45,0,len*.62);
-  g.addColorStop(0,pal[0]);
-  g.addColorStop(.53,pal[1]);
-  g.addColorStop(1,pal[2]);
-
-  ctx.fillStyle=g;
-  ctx.beginPath();
-  ctx.moveTo(0,len*.6);
-  ctx.bezierCurveTo(-z*.26,len*.23,-z*.24,-len*.34,0,-len*.52);
-  ctx.bezierCurveTo(z*.23,-len*.32,z*.25,len*.25,0,len*.6);
-  ctx.fill();
-  ctx.strokeStyle='rgba(246,239,255,.25)';
-  ctx.lineWidth=Math.max(.45,z*.012);
-  ctx.stroke();
-  ctx.restore();
- }
-
- ctx.fillStyle='#d8d0a0';
+ // Hoja verde que sostiene la flor flotante.
+ const leafGrad=ctx.createLinearGradient(0,-z*.4,0,z*.65);
+ leafGrad.addColorStop(0,'#28644e');
+ leafGrad.addColorStop(1,'#123d35');
+ ctx.fillStyle=leafGrad;
  ctx.beginPath();
- ctx.arc(0,0,z*.12,0,Math.PI*2);
+ ctx.ellipse(0,z*.18,z*.98,z*.58,0,0,Math.PI*2);
  ctx.fill();
 
- ctx.fillStyle='#f5e9b6';
- for(let i=0;i<7;i++){
-  let a=i*2.399;
+ // Abertura de la hoja.
+ ctx.fillStyle='#0d3039';
+ ctx.beginPath();
+ ctx.moveTo(z*.96,z*.05);
+ ctx.lineTo(z*.63,z*.17);
+ ctx.lineTo(z*.70,z*.34);
+ ctx.closePath();
+ ctx.fill();
+
+ ctx.strokeStyle='rgba(196,226,219,.28)';
+ ctx.lineWidth=Math.max(.7,z*.012);
+ ctx.beginPath();
+ ctx.ellipse(0,z*.18,z*1.1,z*.66,0,0,Math.PI*2);
+ ctx.stroke();
+
+ // Pétalos violetas y lilas.
+ const palettes=[
+  {edge:'#9273e2',mid:'#c4a3f1',base:'#f0e2ff'},
+  {edge:'#795acb',mid:'#ae8be9',base:'#e9d8ff'},
+  {edge:'#a07ae5',mid:'#ceb5f5',base:'#f4eaff'},
+  {edge:'#866bd8',mid:'#bca5f3',base:'#f2e6ff'}
+ ];
+ const pal=palettes[Math.floor(f.tone*palettes.length)];
+
+ function drawPetalRing(count,len,halfWidth,offset){
+  for(let i=0;i<count;i++){
+   const a=(i/count)*Math.PI*2+offset;
+   ctx.save();
+   ctx.rotate(a);
+
+   const petalGrad=ctx.createLinearGradient(0,-len,0,z*.18);
+   petalGrad.addColorStop(0,pal.edge);
+   petalGrad.addColorStop(.58,pal.mid);
+   petalGrad.addColorStop(1,pal.base);
+
+   ctx.fillStyle=petalGrad;
+   ctx.beginPath();
+   ctx.moveTo(0,z*.09);
+   ctx.bezierCurveTo(
+    -halfWidth*.85,-len*.18,
+    -halfWidth,-len*.72,
+    0,-len
+   );
+   ctx.bezierCurveTo(
+    halfWidth,-len*.72,
+    halfWidth*.85,-len*.18,
+    0,z*.09
+   );
+   ctx.closePath();
+   ctx.fill();
+
+   ctx.strokeStyle='rgba(255,247,255,.65)';
+   ctx.lineWidth=Math.max(.55,z*.009);
+   ctx.stroke();
+
+   ctx.strokeStyle='rgba(255,255,255,.24)';
+   ctx.lineWidth=Math.max(.45,z*.006);
+   ctx.beginPath();
+   ctx.moveTo(0,z*.03);
+   ctx.quadraticCurveTo(0,-len*.5,0,-len*.85);
+   ctx.stroke();
+
+   ctx.restore();
+  }
+ }
+
+ // Tres capas de pétalos: flor redonda y completamente abierta.
+ drawPetalRing(14,z*.98,z*.27,0);
+ drawPetalRing(12,z*.78,z*.24,Math.PI/12);
+ drawPetalRing(9,z*.55,z*.18,Math.PI/9);
+
+ // Centro dorado de la flor.
+ ctx.fillStyle='#cfb56c';
+ ctx.beginPath();
+ ctx.arc(0,0,z*.13,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.fillStyle='#fff0b5';
+ for(let i=0;i<12;i++){
+  const a=i*2.399;
   ctx.beginPath();
-  ctx.arc(Math.cos(a)*z*.08,Math.sin(a)*z*.08,z*.022,0,Math.PI*2);
+  ctx.arc(
+   Math.cos(a)*z*.085,
+   Math.sin(a)*z*.085,
+   z*.022,0,Math.PI*2
+  );
   ctx.fill();
  }
+
  ctx.restore();
 }
 
@@ -461,8 +560,9 @@ function drawBell(x,y,size,color,tilt){
  ctx.translate(x,y);
  ctx.rotate(tilt);
 
- let bw=size*.48,bh=size*.83;
- let g=ctx.createLinearGradient(-bw,0,bw,bh);
+ const bw=size*.48;
+ const bh=size*.83;
+ const g=ctx.createLinearGradient(-bw,0,bw,bh);
  g.addColorStop(0,color);
  g.addColorStop(.55,'#c5b8ff');
  g.addColorStop(1,'#736bca');
@@ -481,6 +581,7 @@ function drawBell(x,y,size,color,tilt){
  ctx.strokeStyle='rgba(236,231,255,.48)';
  ctx.lineWidth=Math.max(.55,size*.035);
  ctx.stroke();
+
  ctx.strokeStyle='rgba(241,235,255,.55)';
  ctx.lineWidth=Math.max(.45,size*.022);
  ctx.beginPath();
@@ -496,38 +597,50 @@ function drawBell(x,y,size,color,tilt){
 }
 
 function drawCampanula(c,x,t){
- let base=c.base*h,len=c.len*h;
- let depth=.53+.78*Math.max(0,(c.base-.6)/.42);
- let sway=Math.sin(t*.00085+c.phase)*S*.014*c.size;
+ const base=c.base*h,len=c.len*h;
+ const depth=.53+.78*Math.max(0,(c.base-.6)/.42);
+ const sway=Math.sin(t*.00085+c.phase)*S*.014*c.size;
 
  ctx.save();
  ctx.translate(x,0);
  ctx.scale(depth,depth);
- let stemX=sway;
+ const stemX=sway;
 
  ctx.strokeStyle='#275342';
  ctx.lineWidth=Math.max(.8,S*.0018);
  ctx.lineCap='round';
  ctx.beginPath();
  ctx.moveTo(0,base);
- ctx.bezierCurveTo(stemX*.2,base-len*.3,stemX*.9,base-len*.68,stemX,base-len);
+ ctx.bezierCurveTo(
+  stemX*.2,base-len*.3,
+  stemX*.9,base-len*.68,
+  stemX,base-len
+ );
  ctx.stroke();
 
  for(let i=0;i<3;i++){
-  let q=.28+i*.18,ly=base-len*q,side=i%2?1:-1;
+  const q=.28+i*.18;
+  const ly=base-len*q;
+  const side=i%2?1:-1;
   ctx.fillStyle=i%2?'#24513e':'#2a6048';
   ctx.beginPath();
   ctx.moveTo(stemX*q,ly);
-  ctx.quadraticCurveTo(stemX*q+side*S*.012,ly-S*.012,stemX*q+side*S*.022,ly-S*.004);
-  ctx.quadraticCurveTo(stemX*q+side*S*.01,ly+S*.006,stemX*q,ly);
+  ctx.quadraticCurveTo(
+   stemX*q+side*S*.012,ly-S*.012,
+   stemX*q+side*S*.022,ly-S*.004
+  );
+  ctx.quadraticCurveTo(
+   stemX*q+side*S*.01,ly+S*.006,
+   stemX*q,ly
+  );
   ctx.fill();
  }
 
  for(let j=0;j<c.count;j++){
-  let q=c.count===1?.92:.48+j*.16;
-  let fx=stemX*q+Math.sin(j*2+c.phase)*S*.009;
-  let fy=base-len*q;
-  let size=S*(.025+(c.base-.58)*.014)*c.size;
+  const q=c.count===1?.92:.48+j*.16;
+  const fx=stemX*q+Math.sin(j*2+c.phase)*S*.009;
+  const fy=base-len*q;
+  const size=S*(.025+(c.base-.58)*.014)*c.size;
 
   ctx.strokeStyle='#306048';
   ctx.lineWidth=Math.max(.7,S*.0015);
@@ -541,15 +654,14 @@ function drawCampanula(c,x,t){
  ctx.restore();
 }
 
-// Ranitas verdes que saltan cuando tocas cerca.
 function drawFrog(f,x,t){
- let size=S*.039*f.size*(.62+Math.max(0,(f.y-.62)/.28)*.55);
- let age=t-f.jumpAt;
- let jumping=age>=0&&age<760;
- let jump=jumping?Math.sin(age/760*Math.PI)*size*3.2:0;
- let y=f.y*h-jump;
- let green=f.tone>.5?'#74a96c':'#4b8c61';
- let dark=f.tone>.5?'#365e43':'#28503a';
+ const size=S*.039*f.size*(.62+Math.max(0,(f.y-.62)/.28)*.55);
+ const age=t-f.jumpAt;
+ const jumping=age>=0&&age<760;
+ const jump=jumping?Math.sin(age/760*Math.PI)*size*3.2:0;
+ const y=f.y*h-jump;
+ const green=f.tone>.5?'#74a96c':'#4b8c61';
+ const dark=f.tone>.5?'#365e43':'#28503a';
 
  ctx.save();
  ctx.translate(x,0);
@@ -613,8 +725,8 @@ function drawFrog(f,x,t){
 
 function drawReeds(t){
  wrapped(reeds,1,S*.15,(r,x)=>{
-  let base=r.base*h,len=r.len*h;
-  let sw=Math.sin(t*.0008+r.p)*w*.005;
+  const base=r.base*h,len=r.len*h;
+  const sw=Math.sin(t*.0008+r.p)*w*.005;
 
   ctx.strokeStyle=r.front>.55?'#12392f':'#163e36';
   ctx.lineWidth=r.thick;
@@ -632,7 +744,7 @@ function drawReeds(t){
   }
  });
 
- let g=ctx.createLinearGradient(0,h*.83,0,h);
+ const g=ctx.createLinearGradient(0,h*.83,0,h);
  g.addColorStop(0,'rgba(5,25,25,0)');
  g.addColorStop(.2,'rgba(4,20,20,.34)');
  g.addColorStop(1,'rgba(2,12,15,.87)');
@@ -642,11 +754,15 @@ function drawReeds(t){
 
 function fireflies(t){
  wrapped(flies,1,S*.02,(f,x)=>{
-  let y=f.y*h+Math.cos(t*.00031*f.speed+f.p)*h*.009;
-  let a=.18+.82*(.5+.5*Math.sin(t*.002*f.speed+f.p));
+  const y=f.y*h+Math.cos(t*.00031*f.speed+f.p)*h*.009;
+  const a=.18+.82*(.5+.5*Math.sin(t*.002*f.speed+f.p));
 
   ctx.globalAlpha=a*.48;
-  ctx.fillStyle=gradient(x,y,f.r*7,'rgba(191,232,147,.54)','rgba(191,232,147,0)');
+  ctx.fillStyle=gradient(
+   x,y,f.r*7,
+   'rgba(191,232,147,.54)',
+   'rgba(191,232,147,0)'
+  );
   ctx.beginPath();
   ctx.arc(x,y,f.r*7,0,Math.PI*2);
   ctx.fill();
@@ -664,7 +780,8 @@ function drawRipples(t){
  ripples=ripples.filter(r=>t-r.t<1900);
 
  for(const r of ripples){
-  let p=(t-r.t)/1900,rad=p*S*.15;
+  const p=(t-r.t)/1900;
+  const rad=p*S*.15;
   ctx.globalAlpha=(1-p)*.58;
   ctx.strokeStyle='#c0dfd9';
   ctx.lineWidth=1;
@@ -692,7 +809,10 @@ function frame(t){
  fireflies(t);
  drawRipples(t);
 
- let v=ctx.createRadialGradient(w*.5,h*.48,S*.18,w*.5,h*.48,Math.max(w,h)*.77);
+ const v=ctx.createRadialGradient(
+  w*.5,h*.48,S*.18,
+  w*.5,h*.48,Math.max(w,h)*.77
+ );
  v.addColorStop(0,'rgba(0,0,0,0)');
  v.addColorStop(1,'rgba(0,6,12,.35)');
  ctx.fillStyle=v;
@@ -701,12 +821,12 @@ function frame(t){
  requestAnimationFrame(frame);
 }
 
-// Explorar el paisaje horizontalmente.
+// Botones para explorar el paisaje.
 function moveView(d){cameraX+=d*w*.42;}
 document.getElementById('leftBtn').addEventListener('click',()=>moveView(-1));
 document.getElementById('rightBtn').addEventListener('click',()=>moveView(1));
 
-// Arrastrar con el dedo o ratón. Tocar el agua crea ondas.
+// Arrastrar el paisaje y tocar el agua para crear ondas.
 canvas.addEventListener('pointerdown',e=>{
  dragging=true;
  didDrag=false;
@@ -719,7 +839,7 @@ canvas.addEventListener('pointerdown',e=>{
 
 canvas.addEventListener('pointermove',e=>{
  if(!dragging||e.pointerId!==pointerId)return;
- let dx=e.clientX-lastPointerX;
+ const dx=e.clientX-lastPointerX;
  if(Math.abs(e.clientX-dragStartX)>4)didDrag=true;
  cameraX-=dx;
  lastPointerX=e.clientX;
@@ -731,14 +851,15 @@ function endPointer(e){
  canvas.classList.remove('dragging');
 
  if(!didDrag){
-  let r=canvas.getBoundingClientRect();
-  let tapX=e.clientX-r.left;
-  let tapY=Math.max(H,e.clientY-r.top);
-  let now=performance.now();
+  const r=canvas.getBoundingClientRect();
+  const tapX=e.clientX-r.left;
+  const tapY=Math.max(H,e.clientY-r.top);
+  const now=performance.now();
+
   ripples.push({x:tapX,y:tapY,t:now});
 
   for(const frog of frogs){
-   let fx=mod(frog.x-cameraX,P);
+   const fx=mod(frog.x-cameraX,P);
    for(const candidateX of [fx,fx-P,fx+P]){
     if(Math.hypot(candidateX-tapX,frog.y*h-tapY)<S*.14){
      frog.jumpAt=now;
@@ -759,12 +880,16 @@ window.addEventListener('keydown',e=>{
  if(e.key==='ArrowLeft'){cameraX-=w*.1;e.preventDefault();}
 });
 
-// Música lenta original y sonidos ambientales, generados en el navegador.
+// Música nocturna y sonidos ambientales creados en el navegador.
 function startAudio(){
  const AC=window.AudioContext||window.webkitAudioContext;
  if(!AC)return null;
 
- const ac=new AC(),master=ac.createGain(),music=ac.createGain(),amb=ac.createGain();
+ const ac=new AC();
+ const master=ac.createGain();
+ const music=ac.createGain();
+ const amb=ac.createGain();
+
  master.gain.value=.0001;
  music.gain.value=.58;
  amb.gain.value=.2;
@@ -772,15 +897,20 @@ function startAudio(){
  amb.connect(master);
  master.connect(ac.destination);
 
- // Sonido suave del agua y la brisa.
- let buf=ac.createBuffer(1,ac.sampleRate*3,ac.sampleRate);
- let data=buf.getChannelData(0),brown=0;
+ // Ruido ambiental suave, como agua y brisa.
+ const buf=ac.createBuffer(1,ac.sampleRate*3,ac.sampleRate);
+ const data=buf.getChannelData(0);
+ let brown=0;
+
  for(let i=0;i<data.length;i++){
   brown=(brown+(Math.random()*2-1)*.018)/1.018;
   data[i]=brown*3.2;
  }
 
- let noise=ac.createBufferSource(),low=ac.createBiquadFilter(),ng=ac.createGain();
+ const noise=ac.createBufferSource();
+ const low=ac.createBiquadFilter();
+ const ng=ac.createGain();
+
  noise.buffer=buf;
  noise.loop=true;
  low.type='lowpass';
@@ -791,15 +921,18 @@ function startAudio(){
  ng.connect(amb);
  noise.start();
 
- // Sonido nocturno muy tenue.
- let insect=ac.createOscillator(),ig=ac.createGain();
- let lfo=ac.createOscillator(),depth=ac.createGain();
+ const insect=ac.createOscillator();
+ const ig=ac.createGain();
+ const lfo=ac.createOscillator();
+ const depth=ac.createGain();
+
  insect.type='sine';
  insect.frequency.value=3900;
  ig.gain.value=.0003;
  insect.connect(ig);
  ig.connect(amb);
  insect.start();
+
  lfo.frequency.value=.2;
  depth.gain.value=.0002;
  lfo.connect(depth);
@@ -811,18 +944,25 @@ function startAudio(){
 
 function playNote(){
  if(!audio||!audioOn||audio.ac.state!=='running')return;
- let ac=audio.ac,now=ac.currentTime;
- let notes=[146.83,174.61,220,196,164.81,130.81,174.61,220,196,164.81,146.83,130.81];
- let freq=notes[note++%notes.length];
- let osc=ac.createOscillator(),g=ac.createGain(),filter=ac.createBiquadFilter();
+
+ const ac=audio.ac;
+ const now=ac.currentTime;
+ const notes=[146.83,174.61,220,196,164.81,130.81,174.61,220,196,164.81,146.83,130.81];
+ const freq=notes[note++%notes.length];
+
+ const osc=ac.createOscillator();
+ const g=ac.createGain();
+ const filter=ac.createBiquadFilter();
 
  osc.type='sine';
  osc.frequency.value=freq;
  filter.type='lowpass';
  filter.frequency.value=900;
+
  g.gain.setValueAtTime(.0001,now);
  g.gain.linearRampToValueAtTime(.105,now+1.4);
  g.gain.setTargetAtTime(.0001,now+2.2,1.15);
+
  osc.connect(filter);
  filter.connect(g);
  g.connect(audio.music);
@@ -830,12 +970,15 @@ function playNote(){
  osc.stop(now+5.3);
 
  if(note%2===0){
-  let bell=ac.createOscillator(),bg=ac.createGain();
+  const bell=ac.createOscillator();
+  const bg=ac.createGain();
+
   bell.type='sine';
   bell.frequency.value=freq*2;
   bg.gain.setValueAtTime(.0001,now);
   bg.gain.linearRampToValueAtTime(.018,now+.8);
   bg.gain.exponentialRampToValueAtTime(.0001,now+4.3);
+
   bell.connect(bg);
   bg.connect(audio.music);
   bell.start(now);
@@ -845,22 +988,31 @@ function playNote(){
 
 async function toggleSound(){
  if(!audio){audio=startAudio();if(!audio)return;}
+
  try{
   if(audio.ac.state==='suspended')await audio.ac.resume();
+
   audioOn=!audioOn;
-  let now=audio.ac.currentTime;
+  const now=audio.ac.currentTime;
+
   audio.master.gain.cancelScheduledValues(now);
-  audio.master.gain.setTargetAtTime(audioOn?.72:.0001,now,audioOn?.8:.25);
+  audio.master.gain.setTargetAtTime(
+   audioOn?.72:.0001,now,audioOn?.8:.25
+  );
 
   if(audioOn){
    if(!timer){playNote();timer=setInterval(playNote,3900);}
+
    soundBtn.setAttribute('aria-label','Pausar música y sonidos nocturnos');
-   soundIcon.innerHTML='<path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a7.5 7.5 0 0 1 0 10"/>';
+   soundIcon.innerHTML=
+    '<path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a7.5 7.5 0 0 1 0 10"/>';
   }else{
    clearInterval(timer);
    timer=null;
+
    soundBtn.setAttribute('aria-label','Activar música y sonidos nocturnos');
-   soundIcon.innerHTML='<path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M17 9l5 6M22 9l-5 6"/>';
+   soundIcon.innerHTML=
+    '<path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M17 9l5 6M22 9l-5 6"/>';
   }
  }catch(_){}
 }
@@ -869,8 +1021,10 @@ soundBtn.addEventListener('click',toggleSound);
 
 document.getElementById('fullBtn').addEventListener('click',async()=>{
  try{
-  if(!document.fullscreenElement)await document.getElementById('world').requestFullscreen();
-  else await document.exitFullscreen();
+  if(!document.fullscreenElement)
+   await document.getElementById('world').requestFullscreen();
+  else
+   await document.exitFullscreen();
  }catch(_){}
 });
 
