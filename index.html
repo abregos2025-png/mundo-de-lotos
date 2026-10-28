@@ -307,3 +307,714 @@
 </main>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#163d39">
+  <title>Mi mundo de lotos 🌸</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: Georgia, "Times New Roman", serif;
+      background: #173d39;
+      color: #fff8e9;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .app {
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      gap: 12px;
+      z-index: 5;
+      background: #173d39;
+    }
+
+    .logo {
+      font-size: 15px;
+      letter-spacing: 2px;
+    }
+
+    .counter {
+      font: 12px Arial, sans-serif;
+      color: #c6dfcf;
+      letter-spacing: 2px;
+    }
+
+    .pages {
+      flex: 1;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+    }
+
+    .pages::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scene {
+      position: relative;
+      min-width: 100%;
+      width: 100%;
+      height: 100%;
+      flex: 0 0 100%;
+      overflow: hidden;
+      scroll-snap-align: start;
+      isolation: isolate;
+    }
+
+    .scene-content {
+      position: relative;
+      z-index: 3;
+      padding: clamp(25px, 6vh, 65px) 9% 30px;
+      max-width: 800px;
+    }
+
+    .eyebrow {
+      font: 11px Arial, sans-serif;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: .85;
+      margin-bottom: 17px;
+    }
+
+    h1 {
+      font-size: clamp(39px, 8vw, 76px);
+      line-height: 1.02;
+      font-weight: normal;
+      max-width: 670px;
+      margin: 0 0 17px;
+      text-wrap: balance;
+    }
+
+    .description {
+      font-size: clamp(15px, 2.4vw, 19px);
+      line-height: 1.7;
+      max-width: 440px;
+      opacity: .92;
+    }
+
+    .swipe-note {
+      font: 11px Arial, sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 25px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      animation: breathe 2s infinite ease-in-out;
+    }
+
+    .swipe-note span {
+      font-size: 22px;
+    }
+
+    .swamp {
+      background: linear-gradient(
+        180deg,
+        #a8c9aa 0%,
+        #507e6c 40%,
+        #24584f 66%,
+        #102f35 100%
+      );
+    }
+
+    .swamp .scene-content {
+      color: #173f38;
+    }
+
+    .mist {
+      position: absolute;
+      width: 85%;
+      height: 90px;
+      left: 5%;
+      top: 38%;
+      background: #f0f5d7;
+      opacity: .18;
+      filter: blur(30px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .moon {
+      position: absolute;
+      right: 12%;
+      top: 12%;
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      background: #fff1bd;
+      box-shadow: 0 0 55px #fff1bd80;
+      opacity: .9;
+    }
+
+    .water {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 39%;
+      background: linear-gradient(180deg, #36766a, #0c333c);
+      border-top: 2px solid #a6d7b766;
+    }
+
+    .water-line {
+      position: absolute;
+      height: 2px;
+      background: #b6d6b655;
+      border-radius: 50%;
+      width: 33%;
+      bottom: 28%;
+      left: 8%;
+    }
+
+    .water-line.two {
+      width: 22%;
+      left: 65%;
+      bottom: 20%;
+    }
+
+    .water-line.three {
+      width: 17%;
+      left: 40%;
+      bottom: 12%;
+    }
+
+    .lily {
+      position: absolute;
+      width: 125px;
+      height: 34px;
+      background: #7cae79;
+      border: 2px solid #a7ce8d;
+      border-radius: 50%;
+      box-shadow: 0 8px 13px #092b2d55;
+    }
+
+    .lily::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -1px;
+      height: 20px;
+      width: 20px;
+      background: #36766a;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+
+    .lily.one {
+      bottom: 25%;
+      left: 9%;
+      transform: rotate(-7deg);
+    }
+
+    .lily.two {
+      bottom: 12%;
+      right: 8%;
+      transform: rotate(8deg) scale(1.15);
+    }
+
+    .lily.three {
+      bottom: 35%;
+      right: 28%;
+      transform: scale(.72);
+    }
+
+    .flower {
+      position: absolute;
+      font-size: clamp(42px, 8vw, 76px);
+      filter: drop-shadow(0 7px 5px #172b2c66);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .flower.one {
+      bottom: 27%;
+      left: 17%;
+    }
+
+    .flower.two {
+      bottom: 14%;
+      right: 13%;
+      animation-delay: -1.8s;
+    }
+
+    .flower.three {
+      bottom: 35%;
+      right: 31%;
+      font-size: clamp(32px, 6vw, 54px);
+      animation-delay: -2.5s;
+    }
+
+    .sparkle {
+      position: absolute;
+      color: #fff2b0;
+      font-size: 22px;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    .sparkle.one {
+      top: 46%;
+      right: 19%;
+    }
+
+    .sparkle.two {
+      top: 57%;
+      left: 42%;
+      animation-delay: .7s;
+    }
+
+    .sparkle.three {
+      top: 24%;
+      left: 10%;
+      animation-delay: 1.3s;
+    }
+
+    .meadow {
+      background: linear-gradient(
+        180deg,
+        #f4c9a5 0%,
+        #f4d8ad 38%,
+        #a8c890 67%,
+        #366f52 100%
+      );
+    }
+
+    .meadow .scene-content {
+      color: #4b5240;
+    }
+
+    .sun {
+      position: absolute;
+      right: 16%;
+      top: 14%;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #ffeab0;
+      box-shadow: 0 0 70px #ffebbc88;
+    }
+
+    .hill {
+      position: absolute;
+      width: 120%;
+      left: -10%;
+      height: 40%;
+      bottom: 0;
+      border-radius: 50% 50% 0 0 / 18% 18% 0 0;
+    }
+
+    .hill.back {
+      bottom: 8%;
+      background: #83ad80;
+      transform: rotate(-5deg);
+    }
+
+    .hill.front {
+      background: #4e8259;
+      height: 31%;
+      transform: rotate(5deg);
+    }
+
+    .path {
+      position: absolute;
+      bottom: -12%;
+      left: 43%;
+      width: 30%;
+      height: 38%;
+      background: #e9ce9a;
+      border-radius: 50% 50% 0 0;
+      transform: rotate(-8deg);
+      clip-path: polygon(35% 0, 60% 0, 100% 100%, 0 100%);
+    }
+
+    .tree {
+      position: absolute;
+      bottom: 16%;
+      font-size: clamp(52px, 9vw, 90px);
+      z-index: 2;
+      filter: drop-shadow(0 8px 4px #25442d40);
+    }
+
+    .tree.left {
+      left: 7%;
+    }
+
+    .tree.right {
+      right: 9%;
+      bottom: 18%;
+      font-size: clamp(45px, 8vw, 76px);
+    }
+
+    .cottage {
+      position: absolute;
+      right: 30%;
+      bottom: 19%;
+      font-size: clamp(46px, 9vw, 76px);
+      z-index: 2;
+      filter: drop-shadow(0 8px 4px #25442d40);
+    }
+
+    .flower-field {
+      position: absolute;
+      left: 12%;
+      bottom: 10%;
+      font-size: 26px;
+      letter-spacing: 10px;
+      z-index: 3;
+    }
+
+    .sunset {
+      background: linear-gradient(
+        180deg,
+        #332f57 0%,
+        #925d77 43%,
+        #e9a477 69%,
+        #455e67 100%
+      );
+    }
+
+    .sunset .scene-content {
+      color: #fff4e6;
+    }
+
+    .sunset-sun {
+      position: absolute;
+      top: 37%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(110px, 24vw, 190px);
+      height: clamp(110px, 24vw, 190px);
+      border-radius: 50%;
+      background: #ffd5a0;
+      box-shadow: 0 0 100px #ffbb9377;
+    }
+
+    .mountain {
+      position: absolute;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-left: 44vw solid transparent;
+      border-right: 44vw solid transparent;
+      border-bottom: 47vh solid #303f53;
+    }
+
+    .mountain.back {
+      left: -15%;
+      border-bottom-color: #67516e;
+      border-bottom-width: 37vh;
+    }
+
+    .mountain.front {
+      right: -18%;
+      border-bottom-color: #263a4a;
+      border-bottom-width: 31vh;
+    }
+
+    .lake {
+      position: absolute;
+      bottom: 0;
+      height: 16%;
+      width: 100%;
+      background: linear-gradient(#455e67, #1e3f4a);
+      z-index: -0;
+    }
+
+    .end-message {
+      position: absolute;
+      z-index: 4;
+      bottom: 26px;
+      left: 8%;
+      right: 8%;
+      text-align: center;
+      font: 10px Arial, sans-serif;
+      letter-spacing: 3px;
+      color: #fff4e6;
+    }
+
+    .controls {
+      background: #173d39;
+      min-height: 68px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 10px 15px;
+      z-index: 5;
+    }
+
+    .arrow {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid #a9c6b2;
+      background: transparent;
+      color: #fff8e9;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .arrow:disabled {
+      opacity: .3;
+      cursor: default;
+    }
+
+    .dots {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border: none;
+      border-radius: 50%;
+      padding: 0;
+      background: #78978a;
+      cursor: pointer;
+      transition: all .3s;
+    }
+
+    .dot.active {
+      background: #f5d4a5;
+      transform: scale(1.4);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes twinkle {
+      from { opacity: .35; }
+      to { opacity: 1; }
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: .65; }
+      50% { opacity: 1; }
+    }
+
+    @media (max-height: 650px) {
+      .scene-content {
+        padding-top: 20px;
+      }
+
+      h1 {
+        font-size: clamp(32px, 6vw, 53px);
+      }
+
+      .description {
+        font-size: 14px;
+      }
+
+      .swipe-note {
+        margin-top: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="logo">✿ MI PEQUEÑO UNIVERSO</div>
+      <div class="counter" id="counter">01 — 03</div>
+    </header>
+
+    <div class="pages" id="pages">
+
+      <!-- ESCENA 1: EL PANTANO -->
+      <section class="scene swamp">
+        <div class="mist"></div>
+        <div class="moon"></div>
+
+        <div class="scene-content">
+          <div class="eyebrow">Capítulo uno · El comienzo</div>
+          <h1>El secreto<br>de los lotos</h1>
+          <p class="description">
+            Existe un lugar escondido donde el agua susurra
+            y las flores despiertan bajo la luz del cielo.
+          </p>
+          <div class="swipe-note">
+            Desliza para explorar <span>→</span>
+          </div>
+        </div>
+
+        <div class="water">
+          <div class="water-line"></div>
+          <div class="water-line two"></div>
+          <div class="water-line three"></div>
+        </div>
+        <div class="lily one"></div>
+        <div class="lily two"></div>
+        <div class="lily three"></div>
+        <div class="flower one">🪷</div>
+        <div class="flower two">🪷</div>
+        <div class="flower three">🪷</div>
+        <div class="sparkle one">✦</div>
+        <div class="sparkle two">✧</div>
+        <div class="sparkle three">✦</div>
+      </section>
+
+      <!-- ESCENA 2: EL PAISAJE -->
+      <section class="scene meadow">
+        <div class="sun"></div>
+
+        <div class="scene-content">
+          <div class="eyebrow">Capítulo dos · El camino</div>
+          <h1>La pradera<br>escondida</h1>
+          <p class="description">
+            Más allá del pantano hay colinas verdes,
+            flores silvestres y una casita esperando visitas.
+          </p>
+          <div class="swipe-note">
+            Sigue descubriendo <span>→</span>
+          </div>
+        </div>
+
+        <div class="hill back"></div>
+        <div class="hill front"></div>
+        <div class="path"></div>
+        <div class="tree left">🌳</div>
+        <div class="tree right">🌲</div>
+        <div class="cottage">🏡</div>
+        <div class="flower-field">🌼 🌷 🌼 🌸</div>
+      </section>
+
+      <!-- ESCENA 3: EL ATARDECER -->
+      <section class="scene sunset">
+        <div class="scene-content">
+          <div class="eyebrow">Capítulo tres · La calma</div>
+          <h1>Hasta el<br>fin del día</h1>
+          <p class="description">
+            Y cuando el sol se despide, el mundo entero
+            se llena de colores, sueños y tranquilidad.
+          </p>
+          <div class="swipe-note">
+            Un pequeño mundo para ti <span>✦</span>
+          </div>
+        </div>
+
+        <div class="sunset-sun"></div>
+        <div class="mountain back"></div>
+        <div class="mountain"></div>
+        <div class="mountain front"></div>
+        <div class="lake"></div>
+        <div class="end-message">GRACIAS POR EXPLORAR MI MUNDO ✧</div>
+      </section>
+
+    </div>
+
+    <footer class="controls">
+      <button class="arrow" id="prev" aria-label="Escena anterior">←</button>
+      <div class="dots" id="dots" aria-label="Elegir escena">
+        <button class="dot active" aria-label="Ir al pantano"></button>
+        <button class="dot" aria-label="Ir a la pradera"></button>
+        <button class="dot" aria-label="Ir al atardecer"></button>
+      </div>
+      <button class="arrow" id="next" aria-label="Siguiente escena">→</button>
+    </footer>
+  </main>
+
+  <script>
+    const pages = document.getElementById("pages");
+    const scenes = Array.from(document.querySelectorAll(".scene"));
+    const dots = Array.from(document.querySelectorAll(".dot"));
+    const counter = document.getElementById("counter");
+    const prev = document.getElementById("prev");
+    const next = document.getElementById("next");
+
+    let current = 0;
+
+    function showScene(index) {
+      current = Math.max(0, Math.min(index, scenes.length - 1));
+
+      pages.scrollTo({
+        left: scenes[current].offsetLeft,
+        behavior: "smooth"
+      });
+
+      updateControls();
+    }
+
+    function updateControls() {
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === current);
+      });
+
+      counter.textContent =
+        String(current + 1).padStart(2, "0") +
+        " — " +
+        String(scenes.length).padStart(2, "0");
+
+      prev.disabled = current === 0;
+      next.disabled = current === scenes.length - 1;
+    }
+
+    prev.addEventListener("click", () => showScene(current - 1));
+    next.addEventListener("click", () => showScene(current + 1));
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => showScene(index));
+    });
+
+    let scrollTimer;
+
+    pages.addEventListener("scroll", () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const width = pages.clientWidth || 1;
+        current = Math.max(
+          0,
+          Math.min(
+            scenes.length - 1,
+            Math.round(pages.scrollLeft / width)
+          )
+        );
+        updateControls();
+      }, 80);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "ArrowRight") showScene(current + 1);
+      if (event.key === "ArrowLeft") showScene(current - 1);
+    });
+
+    updateControls();
+  </script>
+</body>
+</html>
